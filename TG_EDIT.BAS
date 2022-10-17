@@ -35,7 +35,7 @@
   Computer_Character_Base = 0
   Spell_Name_Base = 0
   Info_Bank = 255
-  Place_Bank = 255
+  Place_BanK1 = 255
   Place_Bank2 = 255
   Place_Field_Size = 120
   Item_Bank = 255
@@ -200,11 +200,13 @@ DO
    PRINT "  PLC:";Total_Places;"\";PlaceTableSize;
    IF MemoryConfig <=64
         PRINT "   ";MemoryConfig;"K"
-   ELSE
-        IF Total_Items <100 AND Total_Computer_Characters<100 AND Total_Places < 100 THEN PRINT " ";MemoryConfig
+        PRINT 
+   ELIF MemoryConfig = 128
+        PRINT " "
+        POSITION 34,4
+        PRINT MemoryConfig;"K"
    ENDIF
    'PRINT USING "### Objects  ### hostilities  ### places  ## passwords/spells####,### Bytes Free"; Total_Items; HOS; PLC; Total_Spells; FRE(-1)
-   PRINT 
    PRINT " A) Edit Main Information"
    PRINT " B) Edit Specifications"
    PRINT " C) Edit Passwords/spells"
@@ -306,20 +308,20 @@ LOOP
 '------------------------------------------------------------------------------  
   PROC Edit_Main_Info
     CLS
-    EXEC FIELD_GET GameName_Store,ADR(EDIT$(0)),40,Name_Bank
+    Z=USR(@FIELD_GET, GameName_Store,ADR(EDIT$(0)),40,Info_Bank)
     PRINT " Name of game"
     EXEC BIG_TEXT_EDIT 40,1 
-    EXEC FIELD_PUT GameName_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Name_Bank
+    Z=USR(@FIELD_PUT,GameName_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Info_Bank)
 
-    EXEC FIELD_GET Author_Store,ADR(EDIT$(0)),40,Name_Bank
+    Z=USR(@FIELD_GET, Author_Store,ADR(EDIT$(0)),40,Info_Bank)
     POSITION 0,3
     PRINT "Author(s)"
     EXEC BIG_TEXT_EDIT 40,4 
-    EXEC FIELD_PUT Author_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Name_Bank
+    Z=USR(@FIELD_PUT,Author_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Info_Bank)
     CLS
-    EXEC FIELD_GET Intro_Text_Store,ADR(EDIT$(0)),255,Name_Bank
-    EXEC FIELD_GET Intro_Text_Store+255,ADR(EDIT$(1)),255,Name_Bank
-    EXEC FIELD_GET Intro_Text_Store+510,ADR(EDIT$(2)),249,Name_Bank   
+    Z=USR(@FIELD_GET, Intro_Text_Store,ADR(EDIT$(0)),255,Info_Bank)
+    Z=USR(@FIELD_GET, Intro_Text_Store+255,ADR(EDIT$(1)),255,Info_Bank)
+    Z=USR(@FIELD_GET, Intro_Text_Store+510,ADR(EDIT$(2)),249,Info_Bank)  
     EXEC FIND_STORE_STRING_SIZE Intro_Text_Store,759
 '   MOVE Intro_Text_Store,ADR(EDIT$(0))+1,255
 '   MOVE Intro_Text_Store+255,ADR(EDIT$(1))+1,255
@@ -340,18 +342,18 @@ LOOP
     PRINT "Opening Introduction Text."
     EXEC BIG_TEXT_EDIT 760,1
     'EXEC CLEAR_STRING_MEMORY Intro_Text_Store,759
-    EXEC FIELD_PUT Intro_Text_Store,ADR(EDIT$(0)),255,LEN(EDIT$(0)),Name_Bank
-    EXEC FIELD_PUT Intro_Text_Store+255,ADR(EDIT$(1)),255,LEN(EDIT$(1)),Name_Bank
-    EXEC FIELD_PUT Intro_Text_Store+510,ADR(EDIT$(2)),249,LEN(EDIT$(2)),Name_Bank
+    Z=USR(@FIELD_PUT,Intro_Text_Store,ADR(EDIT$(0)),255,LEN(EDIT$(0)),Info_Bank)
+    Z=USR(@FIELD_PUT,Intro_Text_Store+255,ADR(EDIT$(1)),255,LEN(EDIT$(1)),Info_Bank)
+    Z=USR(@FIELD_PUT,Intro_Text_Store+510,ADR(EDIT$(2)),249,LEN(EDIT$(2)),Info_Bank)
     EDIT$(1)=""
     EDIT$(2)=""
    ' MOVE ADR(EDIT$(0))+1,Intro_Text_Store,255
    ' MOVE ADR(EDIT$(1))+1,Intro_Text_Store+255,255
    ' MOVE ADR(EDIT$(2))+1,Intro_Text_Store+510,245
     CLS
-    EXEC FIELD_GET Closing_Text_Store,ADR(EDIT$(0)),255,Name_Bank
-    EXEC FIELD_GET Closing_Text_Store+255,ADR(EDIT$(1)),255,Name_Bank
-    EXEC FIELD_GET Closing_Text_Store+510,ADR(EDIT$(2)),249,Name_Bank   
+    Z=USR(@FIELD_GET, Closing_Text_Store,ADR(EDIT$(0)),255,Info_Bank)
+    Z=USR(@FIELD_GET, Closing_Text_Store+255,ADR(EDIT$(1)),255,Info_Bank)
+    Z=USR(@FIELD_GET, Closing_Text_Store+510,ADR(EDIT$(2)),249,Info_Bank) 
     EXEC FIND_STORE_STRING_SIZE Closing_Text_Store,759
     'MOVE Closing_Text_Store,ADR(EDIT$(0))+1,255
     'MOVE Closing_Text_Store+255,ADR(EDIT$(1))+1,255
@@ -372,9 +374,9 @@ LOOP
     PRINT "Game Closing Text."
     EXEC BIG_TEXT_EDIT 760,1
     'EXEC CLEAR_STRING_MEMORY Closing_Text_Store,760
-    EXEC FIELD_PUT Closing_Text_Store,ADR(EDIT$(0)),255,LEN(EDIT$(0)),Name_Bank
-    EXEC FIELD_PUT Closing_Text_Store+255,ADR(EDIT$(1)),255,LEN(EDIT$(1)),Name_Bank
-    EXEC FIELD_PUT Closing_Text_Store+510,ADR(EDIT$(2)),249,LEN(EDIT$(2)),Name_Bank
+    Z=USR(@FIELD_PUT,Closing_Text_Store,ADR(EDIT$(0)),255,LEN(EDIT$(0)),Info_Bank)
+    Z=USR(@FIELD_PUT,Closing_Text_Store+255,ADR(EDIT$(1)),255,LEN(EDIT$(1)),Info_Bank)
+    Z=USR(@FIELD_PUT,Closing_Text_Store+510,ADR(EDIT$(2)),249,LEN(EDIT$(2)),Info_Bank)
     EDIT$(1)=""
     EDIT$(2)=""
     'MOVE ADR(EDIT$(0))+1,Closing_Text_Store,255
@@ -447,10 +449,10 @@ LOOP
     PRINT "How many credit units at start of game."
     PRINT " ";S22;CHR$(28)
     INPUT S22    
-    EXEC FIELD_GET Monetary_Unit_Store,ADR(EDIT$(0)),12,Name_Bank
+    Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
     PRINT "Name of Monetary Units"
     EXEC BIG_TEXT_EDIT 12,20
-    EXEC FIELD_PUT Monetary_Unit_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Name_Bank
+    Z=USR(@FIELD_PUT,Monetary_Unit_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Info_Bank)
   ENDPROC
 '------------------------------------------------------------------------------  
   PROC Edit_Specifications
@@ -547,10 +549,10 @@ LOOP
         PRINT " ";S20;CHR$(28)
         INPUT S20
         IF S20 = 1
-          EXEC FIELD_GET Next_File_Store,ADR(EDIT$(0)),12,Name_Bank
+          Z=USR(@FIELD_GET, Next_File_Store,ADR(EDIT$(0)),12,Info_Bank)
           PRINT "Name of file."
           EXEC BIG_TEXT_EDIT 12,12
-          EXEC FIELD_PUT Next_File_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Name_Bank
+          Z=USR(@FIELD_PUT,Next_File_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Info_Bank)
         ENDIF  
   ENDPROC
 '------------------------------------------------------------------------------  
@@ -560,13 +562,13 @@ LOOP
     PRINT "Passwords or Spells that are to be used in the game."
     BIG_TEXT_XPOS = 8
     REPEAT  
-        EXEC FIELD_GET Spell_Name_Base + 16 * Spell_Index,ADR(EDIT$(0)),16,Name_Bank
+        Z=USR(@FIELD_GET, Spell_Name_Base + 16 * Spell_Index,ADR(EDIT$(0)),16,Name_Bank)
         POSITION 0, 2 + Spell_Index
         PRINT "WORD ";Spell_Index
         POSITION 7, 2 + Spell_Index
         PRINT ":"
         EXEC BIG_TEXT_EDIT 16,2 + Spell_Index
-        EXEC FIELD_PUT Spell_Name_Base + 16 * Spell_Index,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank
+        Z=USR(@FIELD_PUT,Spell_Name_Base + 16 * Spell_Index,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_BANK)
         Spell_Index = Spell_Index + 1 
         IF Spell_Index > Total_Spells THEN Total_Spells = Spell_Index
     UNTIL a = 27 or EDIT$(0) = "" or Spell_Index >= SpellDataSize
@@ -754,16 +756,16 @@ LOOP
                 PRINT " What is the item credit value.Enter 0 if no value."
                 PRINT " ";OP(ITEM_INDEX);CHR$(28)
                 INPUT  Op(ITEM_INDEX)
-                PRINT 
-                EXEC FIELD_GET Item_Name_Base+ItemFieldSize *ITEM_INDEX,ADR(EDIT$(0)),ItemFieldSize ,Name_Bank
+                PRINT
+                Z=USR(@FIELD_GET,Item_Name_Base+ItemFieldSize*ITEM_INDEX,ADR(EDIT$(0)),ItemFieldSize,Name_Bank) 
                 POSITION 0,17
                 PRINT CHR$(156);CHR$(156)
                 POSITION 0,17
                 PRINT "What is the name of this item?"
                 EXEC BIG_TEXT_EDIT ItemFieldSize,18 
-                EXEC FIELD_PUT Item_Name_Base+ItemFieldSize *ITEM_INDEX,ADR(EDIT$(0)),ItemFieldSize ,LEN(EDIT$(0)),Name_Bank
+                Z=USR(@FIELD_PUT,Item_Name_Base+ItemFieldSize*ITEM_INDEX,ADR(EDIT$(0)),ItemFieldSize,LEN(EDIT$(0)),Name_Bank)
                 PRINT
-                EXEC FIELD_GET Item_Description_Base + 80 * ITEM_INDEX,ADR(EDIT$(0)),80,Item_Bank
+                Z=USR(@FIELD_GET, Item_Description_Base + 80 * ITEM_INDEX,ADR(EDIT$(0)),80,Item_Bank)
                 POSITION 0,19
                 IF (OT(ITEM_INDEX) = 23 OR OT(ITEM_INDEX) = 24 OR OT(ITEM_INDEX) = 26) AND OV(ITEM_INDEX) MOD 100 = 3 
                   PRINT "Name of other exit."
@@ -779,7 +781,7 @@ LOOP
                   PRINT "Enter Description of the item."
                 ENDIF
                 EXEC BIG_TEXT_EDIT 80,20
-                EXEC FIELD_PUT Item_Description_Base + 80 * ITEM_INDEX,ADR(EDIT$(0)),80,LEN(EDIT$(0)),Item_Bank
+                Z=USR(@FIELD_PUT,Item_Description_Base + 80 * ITEM_INDEX,ADR(EDIT$(0)),80,LEN(EDIT$(0)),Item_BANK)
                 ITEM_INDEX = ITEM_INDEX + 1
                 IF ITEM_INDEX > Total_Items THEN Total_Items = ITEM_INDEX
   
@@ -891,11 +893,11 @@ LOOP
            INPUT  HS(Computer_Character_Index)
          ENDIF
 
-          EXEC FIELD_GET Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,Name_Bank
+          Z=USR(@FIELD_GET, Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,Name_Bank)
           POSITION 0,16
           PRINT "What is the name of the character?"
           EXEC BIG_TEXT_EDIT 16,17
-          EXEC FIELD_PUT Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank
+          Z=USR(@FIELD_PUT,Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_BANK)
 
          Computer_Character_Index = Computer_Character_Index + 1
          IF Computer_Character_Index > Computer_Character_Index THEN Total_Computer_Characters = Computer_Character_Index        
@@ -1064,10 +1066,10 @@ LOOP
                           PRINT " ";B;CHR$(28)
                           INPUT B
                           ROL(PLACE_INDEX) = ROL(PLACE_INDEX) AND 61440 + B
-                          EXEC FIELD_GET Place_Exit_Base + 16 * PLACE_INDEX,ADR(EDIT$(0)),16,Name_Bank
-                          PRINT " Name of exit"
+                          Z=USR(@FIELD_GET, Place_Exit_Base + 16 * PLACE_INDEX,ADR(EDIT$(0)),16,Name_Bank)
+                          PRINT " Name of exit"  
                           EXEC BIG_TEXT_EDIT 16,14
-                          EXEC FIELD_PUT Place_Exit_Base + 16 * PLACE_INDEX,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank
+                          Z=USR(@FIELD_PUT,Place_Exit_Base + 16 * PLACE_INDEX,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank)
 
                           IF RO(PLACE_INDEX) = 5 OR RO(PLACE_INDEX) = 6
                               PRINT " What Password/Spell will cause effect."
@@ -1082,10 +1084,10 @@ LOOP
           ENDIF
           CLS
           IF PLACE_INDEX < 128
-            EXEC FIELD_GET Place_Description_Base+Place_Field_Size*PLACE_INDEX,ADR(EDIT$(0)),Place_Field_Size,Place_Bank
+            Z=USR(@FIELD_GET, Place_Description_Base+Place_Field_Size*PLACE_INDEX,ADR(EDIT$(0)),Place_Field_Size,Place_BanK1)
           ELSE
             N = PLACE_INDEX & 127
-            EXEC FIELD_GET Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,Place_Bank2
+            Z=USR(@FIELD_GET, Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,Place_Bank2)
           ENDIF
           PRINT " Place "; PLACE_INDEX
           PRINT "Enter description of place."
@@ -1093,10 +1095,10 @@ LOOP
           PRINT "display automatically.)"          
           EXEC BIG_TEXT_EDIT Place_Field_Size,4
           IF PLACE_INDEX < 128
-                EXEC FIELD_PUT Place_Description_Base+Place_Field_Size*PLACE_INDEX,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank
+                Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*PLACE_INDEX,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank1)
           ELSE
                 N = PLACE_INDEX & 127
-                EXEC FIELD_PUT Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank2
+                Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_bank2)
           ENDIF
       ENDIF
         IF Room_Type_In < 16
@@ -1112,7 +1114,7 @@ LOOP
         POKE String_Store_Base,0
         MOVE String_Store_Base,String_Store_Base + 1,10232 
     ENDIF
-    IF MemoryConfig = 52 OR MemoryConfig = 64
+    IF MemoryConfig = 52 
         POKE 54286,0
         POKE $D301,254
         POKE 49152,0
@@ -1121,14 +1123,7 @@ LOOP
         POKE 54286,64
     ENDIF
     IF MemoryConfig = 64
-        I = 55296
-        J = 55297
-        POKE 54286,0
-        POKE $D301,254
-        POKE 55296,0
-        MOVE I,J,10232
-        POKE $D301,255
-        POKE 54286,64    
+        Z=USR(@CLEAR_X_BANK,254)
     ENDIF
     POKE ADR(OT),0
     MOVE ADR(OT),ADR(OT)+1,5 * ItemTableMax 
@@ -1157,19 +1152,41 @@ LOOP
     '' ENDIF
        Modified = 0
        OPEN #1,8,0,FileName$
-       EXEC FIND_STORE_STRING_SIZE Intro_Text_Store,759
-       PRINT #1, String_Length  
-       BPUT #1,Intro_Text_Store,String_Length  
-       EXEC FIND_STORE_STRING_SIZE Closing_Text_Store,759
-       PRINT #1, String_Length
-       BPUT #1,Closing_Text_Store,String_Length
-       EXEC FIELD_GET Gamename_Store,ADR(EDIT$(0)),40,Name_Bank
+
+
+
+         EXEC FIND_STORE_STRING_SIZE Intro_Text_Store,759
+         PRINT #1, String_Length  
+        IF MemoryConfig = 128
+            CLS
+            H=DPEEK(88)+40
+            Z=USR(@FIELD_GET,Intro_Text_Store+510,H+509,255,Info_Bank)
+            Z=USR(@FIELD_GET,Intro_Text_Store+255,H+254,255,Info_Bank)
+            Z=USR(@FIELD_GET,Intro_Text_Store,H-1,255,Info_Bank)
+            BPUT #1,H,String_Length
+        ELSE
+           BPUT #1,Intro_Text_Store,String_Length  
+        ENDIF
+        EXEC FIND_STORE_STRING_SIZE Closing_Text_Store,759
+        PRINT #1, String_Length
+        IF MemoryConfig = 128
+            CLS
+            H=DPEEK(88)+40
+            Z=USR(@FIELD_GET,Closing_Text_Store+510,H+509,255,Info_Bank)
+            Z=USR(@FIELD_GET,Closing_Text_Store+255,H+254,255,Info_Bank)
+            Z=USR(@FIELD_GET,Closing_Text_Store,H-1,255,Info_Bank)
+            BPUT #1,H,String_Length
+            CLS
+        ELSE
+           BPUT #1,Closing_Text_Store,String_Length
+        ENDIF
+       Z=USR(@FIELD_GET, Gamename_Store,ADR(EDIT$(0)),40,Info_Bank)
        PRINT #1, EDIT$(0)  'TITLE_TEXT$
-       EXEC FIELD_GET Author_Store,ADR(EDIT$(0)),40,Name_Bank
+       Z=USR(@FIELD_GET, Author_Store,ADR(EDIT$(0)),40,Info_Bank)
        PRINT #1, EDIT$(0)  'AUTHOR_TEXT$
-       EXEC FIELD_GET Monetary_Unit_Store,ADR(EDIT$(0)),12,Name_Bank
+       Z=USR(@FIELD_GET, Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
        PRINT #1, EDIT$(0)  'Next Game File
-       EXEC FIELD_GET Next_File_Store,ADR(EDIT$(0)),12,Name_Bank
+       Z=USR(@FIELD_GET, Next_File_Store,ADR(EDIT$(0)),12,Info_Bank)
        PRINT #1, EDIT$(0)  'Monetary Unit Name
        PRINT #1, "(FE)"
        PRINT #1, S0
@@ -1222,7 +1239,7 @@ LOOP
        PRINT #1, S47
        PRINT #1, Total_Spells
        FOR N = 0 TO Total_Spells
-           EXEC FIELD_GET Spell_Name_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank
+           Z=USR(@FIELD_GET, Spell_Name_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
            PRINT #1, EDIT$(0)
        NEXT N
        PRINT #1, Total_Items
@@ -1241,11 +1258,11 @@ LOOP
          PRINT #1, OV(N)
          PRINT #1, OV2(N)
          PRINT #1, OV3(N)   
-         EXEC FIELD_GET Item_Name_Base+ItemFieldSize * N,ADR(EDIT$(0)),ItemFieldSize ,Name_Bank
+         Z=USR(@FIELD_GET, Item_Name_Base+ItemFieldSize * N,ADR(EDIT$(0)),ItemFieldSize ,Name_Bank)
          PRINT #1, EDIT$(0) 'ON$(N)
-         EXEC FIELD_GET Item_Description_Base + 80 * N,ADR(EDIT$(0)),80,Item_Bank
+         Z=USR(@FIELD_GET, Item_Description_Base + 80 * N,ADR(EDIT$(0)),80,Item_Bank)
          IF N  < 204 
-              EXEC FIELD_GET Computer_Character_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank
+              Z=USR(@FIELD_GET, Computer_Character_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
          ELSE
               B = N - 204
               EDIT$(0) = ""
@@ -1284,13 +1301,13 @@ LOOP
            PRINT #1, RDL(N)
            PRINT #1, RO(N)
            PRINT #1, ROL(N)
-           EXEC FIELD_GET Place_Exit_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank
+           Z=USR(@FIELD_GET, Place_Exit_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
            PRINT #1, EDIT$(0) 'REN$(N)
            PRINT #1, ROV(N)
            IF N < 128
-                EXEC FIELD_GET Place_Description_Base + Place_Field_Size * N,ADR(EDIT$(0)),Place_Field_Size,Place_Bank
+                Z=USR(@FIELD_GET, Place_Description_Base + Place_Field_Size * N,ADR(EDIT$(0)),Place_Field_Size,Place_BanK1)
            ELSE
-                EXEC FIELD_GET Place_Description_Base + Place_Field_Size * (N&127),ADR(EDIT$(0)),Place_Field_Size,Place_Bank2
+                Z=USR(@FIELD_GET, Place_Description_Base + Place_Field_Size * (N&127),ADR(EDIT$(0)),Place_Field_Size,Place_Bank2)
            ENDIF
            PRINT #1, EDIT$(0) 'RD$(N)   
        NEXT N
@@ -1303,26 +1320,42 @@ LOOP
     OPEN #1,4,0,FileName$
     INPUT #1, A
     A = A & 4095
-    BGET #1,Intro_Text_Store,A
+    IF MemoryConfig = 128
+        CLS
+        H=DPEEK(88)+40
+        BGET #1,H,A
+        Z=USR(@FIELD_PUT,Intro_Text_Store,H-1,255,255,Info_Bank)
+        Z=USR(@FIELD_PUT,Intro_Text_Store+255,H+254,255,255,Info_Bank)
+        Z=USR(@FIELD_PUT,Intro_Text_Store+510,H+509,255,255,Info_Bank)
+    ELSE
+        BGET #1,Intro_Text_Store,A
+    ENDIF
     INPUT #1, A
     A = A & 4095
-    BGET #1,Closing_Text_Store,A
+    IF MemoryConfig = 128
+        CLS
+        H=DPEEK(88)+40
+        BGET #1,H,A
+        Z=USR(@FIELD_PUT,Closing_Text_Store,H-1,255,255,Info_Bank)
+        Z=USR(@FIELD_PUT,Closing_Text_Store+255,H+254,255,255,Info_Bank)
+        Z=USR(@FIELD_PUT,Closing_Text_Store+510,H+509,255,255,Info_Bank)        
+        CLS
+    ELSE
+        BGET #1,Closing_Text_Store,A
+    ENDIF
     INPUT #1, EDIT$(0)  'TITLE_TEXT$
     'EXEC CLEAR_STRING_MEMORY GameName_Store,40
-    MOVE ADR(EDIT$(0))+1,GameName_Store,LEN(EDIT$(0))
-
+    Z=USR(@FIELD_PUT,GameName_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Info_Bank)
     INPUT #1, EDIT$(0)  'AUTHOR_TEXT$
-    'EXEC CLEAR_STRING_MEMORY Author_Store,40
-    MOVE ADR(EDIT$(0))+1,Author_Store,LEN(EDIT$(0))    
-
+    'EXEC CLEAR_STRING_MEMORY Author_Store,40    
+    Z=USR(@FIELD_PUT,Author_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Info_Bank)
     INPUT #1, EDIT$(0)  'Next Game File
     'EXEC CLEAR_STRING_MEMORY Next_File_Store,12
     MOVE ADR(EDIT$(0))+1,Next_File_Store,LEN(EDIT$(0))
+    Z=USR(@FIELD_PUT,Next_File_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Info_Bank)
     INPUT #1, EDIT$(0)  'Monetary Unit Name
     'EXEC CLEAR_STRING_MEMORY Monetary_Unit_Store,12
-    MOVE ADR(EDIT$(0))+1,Monetary_Unit_Store,LEN(EDIT$(0))
-
-
+    Z=USR(@FIELD_PUT,Monetary_Unit_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Info_Bank)
     INPUT #1, EDIT$(0)  'Future Expansion
     INPUT #1, S0
     INPUT #1, WIN_PLACE 'S1
@@ -1375,7 +1408,7 @@ LOOP
     INPUT #1, Total_Spells
     FOR N = 0 TO Total_Spells
         INPUT #1, EDIT$(0)
-        EXEC FIELD_PUT Spell_Name_Base+16*N,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank
+        Z=USR(@FIELD_PUT,Spell_Name_Base+16*N,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank)
         'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254    
        'EXEC CLEAR_STRING_MEMORY Spell_Name_Base+16*N,16
        'MOVE ADR(EDIT$(0))+1,Spell_Name_Base+16*N,LEN(EDIT$(0))
@@ -1398,13 +1431,13 @@ LOOP
       INPUT #1, OV2(N)
       INPUT #1, OV3(N)
       INPUT #1, EDIT$(0) 'ON$(N)
-      EXEC FIELD_PUT Item_Name_Base + ItemFieldSize * N,ADR(EDIT$(0)),ItemFieldSize ,LEN(EDIT$(0)),Name_Bank
+      Z=USR(@FIELD_PUT,Item_Name_Base + ItemFieldSize * N,ADR(EDIT$(0)),ItemFieldSize ,LEN(EDIT$(0)),Name_Bank)
       'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
       'EXEC CLEAR_STRING_MEMORY Item_Name_Base+16*N,16
       'MOVE ADR(EDIT$(0))+1,Item_Name_Base+16*N,LEN(EDIT$(0))
       'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
       INPUT #1, EDIT$(0) 'OD$(N)
-      EXEC FIELD_PUT Item_Description_Base+80*N,ADR(EDIT$(0)),80,LEN(EDIT$(0)),Item_Bank
+      Z=USR(@FIELD_PUT,Item_Description_Base+80*N,ADR(EDIT$(0)),80,LEN(EDIT$(0)),Item_BANK)
       'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
       'EXEC CLEAR_STRING_MEMORY Item_Description_Base+80*N,80
       'MOVE ADR(EDIT$(0))+1,Item_Description_Base+80*N,LEN(EDIT$(0))
@@ -1419,7 +1452,7 @@ LOOP
       INPUT #1, HV(N)
       INPUT #1, HM(N)
       INPUT #1, EDIT$(0) 'HN$(N)
-      EXEC FIELD_PUT Computer_Character_Base+16*N,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank
+      Z=USR(@FIELD_PUT,Computer_Character_Base+16*N,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_BANK)
       'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
       'EXEC CLEAR_STRING_MEMORY Computer_Character_Base+16*N,16
       'MOVE ADR(EDIT$(0))+1,Computer_Character_Base+16*N,LEN(EDIT$(0))
@@ -1447,19 +1480,19 @@ LOOP
         INPUT #1, RO(N)
         INPUT #1, ROL(N)
         INPUT #1, EDIT$(0) 'REN$(N)
-          IF N < 128
-                EXEC FIELD_PUT Place_Description_Base+Place_Field_Size*PLACE_INDEX,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank
-          ELSE
-                EXEC FIELD_PUT Place_Description_Base+Place_Field_Size*(N&127),ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank2
-          ENDIF
-        EXEC FIELD_PUT Place_Exit_Base+16*N,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank
+        Z=USR(@FIELD_PUT,Place_Exit_Base+16*N,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_BANK)
         'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
         'EXEC CLEAR_STRING_MEMORY Place_Exit_Base+16*N,N
         'MOVE ADR(EDIT$(0))+1,Place_Exit_Base+16*N,LEN(EDIT$(0))
         'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
         INPUT #1, ROV(N)
         INPUT #1, EDIT$(0) 'RD$(N)
-        EXEC FIELD_PUT Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Name_Bank
+        IF N < 128
+              Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank1)
+        ELSE
+              Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*(N&127),ADR(EDIT$(0)),Place_Field_Size,LEN(EDIT$(0)),Place_Bank2)
+        ENDIF
+
         'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
         'EXEC CLEAR_STRING_MEMORY Place_Description_Base+Place_Field_Size*N,32
         'MOVE ADR(EDIT$(0))+1,Place_Description_Base+Place_Field_Size*N,LEN(EDIT$(0))
@@ -1542,7 +1575,6 @@ LOOP
     '' POSITION 0,0
       GET A
     '' PRINT k;"  ",A;"  "
-    
       IF (a>0 and a<27) or (a>31 and a<125) 
           IF StringLength < EDIT_STRING_SIZE
             IF CharPosition>=StringLength
@@ -1688,43 +1720,6 @@ LOOP
       UNTIL PEEK(String_Addr_Start + String_Length-1)>0 OR String_Length = 0  
    ENDPROC
 '------------------------------------------------------------------------------
-    PROC FIELD_PUT Field_Addr_Start String_Addr Field_Size String_Size Field_Bank
-        H = String_Addr + 1
-        A = Field_Addr_Start
-        I = A + 1
-        J = Field_Size - 1
-        POKE 54286,0
-        POKE 53271,2
-        POKE 54017,Field_Bank
-        POKE A,0
-        MOVE A,I,J
-        MOVE H,A,String_Size
-        POKE 54017,255
-        POKE 53271,4
-        POKE 54286,64
-    ENDPROC
-'------------------------------------------------------------------------------
-    PROC FIELD_GET Field_Addr_Start String_Addr Field_Size Field_Bank
-        A = Field_Addr_Start
-        H=String_Addr + 1
-        POKE 54286,0
-        POKE 54017,Field_Bank
-        POKE 53271,0
-        MOVE A,H,Field_Size
-        POKE 53271,4   
-        POKE 54017,255
-        POKE 54286,64
-        IF PEEK(String_Addr + Field_Size) = 0
-          I = Field_Size   
-          REPEAT
-              I = I - 1
-          UNTIL PEEK(String_Addr + I)<>0 OR I = 0
-        ELSE
-            I = Field_Size 
-        ENDIF
-        POKE String_Addr,I
-    ENDPROC
-'------------------------------------------------------------------------------
     PROC DISK_DIRECTORY
         CLS
         A = 0
@@ -1764,13 +1759,13 @@ LOOP
         PRINT "1)  48K ATARI 400/800."
         PRINT "2)  52K ATARI 400/800."
         PRINT "3)  64K ATARI 800XL/65XE."
-        'PRINT "4) 128K ATARI 130XE (MUST RESTART)."
+        PRINT "4) 128K ATARI 130XE (MUST RESTART)."
         A = 0
         REPEAT
           A = KEY()
         UNTIL A>0
         GET A   
-        IF A >48 AND A<52 
+        IF A >48 AND A<53 
             A = A&15
             IF A = 1
                 MemoryConfig = 48                 
@@ -1778,8 +1773,8 @@ LOOP
                 MemoryConfig = 52
             ELIF A = 3
                 MemoryConfig = 64
-            'ELIF A = 4 
-            ''    MemoryConfig = 128
+            ELIF A = 4 
+                MemoryConfig = 128
             ENDIF
         ENDIF
         
@@ -1803,16 +1798,17 @@ LOOP
             Intro_Text_Store = String_Store_Base + 104
             Closing_Text_Store = Intro_Text_Store  + 760
             Place_Description_Base = Closing_Text_Store + 760
-            Item_Description_Base = Place_Description_Base + 120 * PlaceTableSize
-            Place_Exit_Base = Item_Description_Base + 80 * ItemTableSize
+            Item_Description_Base = Place_Description_Base + 120 * PlaceTableSize 
+            Place_Exit_Base = Item_Description_Base + 80 * ItemTableSize 
             Item_Name_Base = Place_Exit_Base + 16 * PlaceTableSize
             Computer_Character_Base = Item_Name_Base + 16 * ItemTableSize
             Spell_Name_Base = Computer_Character_Base + 16 * ComputerCharacterTableSize
             String_Storage_Base_Last = Spell_Name_Base + 16 * SpellDataSize
             Info_Bank = 255
-            Place_Bank = 255
+            Place_BanK1 = 255
             Item_Bank = 255
-            Name_Bank = 255                       
+            Name_Bank = 255
+            DPOKE 2,$9200                       
         ELIF MemoryConfig = 52
             ItemTableSize = 51
             ComputerCharacterTableSize = 32
@@ -1829,16 +1825,17 @@ LOOP
             Intro_Text_Store = String_Store_Base + 104
             Closing_Text_Store = Intro_Text_Store  + 760  
             Place_Description_Base = Closing_Text_Store + 760
-            Place_Exit_Base = Place_Description_Base + 120 * ItemTableSize
+            Place_Exit_Base = Place_Description_Base + 120 * ItemTableSize 
             Item_Name_Base = Place_Exit_Base + 16 * PlaceTableSize
             Computer_Character_Base = Item_Name_Base + 16 * ItemTableSize
             Spell_Name_Base = Computer_Character_Base + 16 * ComputerCharacterTableSize
             String_Storage_Base_Last = Spell_Name_Base + 16 * SpellDataSize
-            Item_Description_Base = 49152
+            Item_Description_Base = 49152 
             Info_Bank = 255
-            Place_Bank = 255
+            Place_BanK1 = 255
             Item_Bank = 255
-            Name_Bank = 255                       
+            Name_Bank = 255
+            DPOKE 2,$9200                       
         ELIF MemoryConfig = 64
             ItemTableSize = 72
             ComputerCharacterTableSize = 36
@@ -1854,16 +1851,17 @@ LOOP
             Next_File_Store = String_Store_Base + 92
             Intro_Text_Store = String_Store_Base + 104
             Closing_Text_Store = Intro_Text_Store  + 760  
-            Item_Description_Base = Closing_Text_Store + 760
+            Item_Description_Base = Closing_Text_Store + 760 
             Item_Name_Base = 49152
             Place_Exit_Base = Item_Name_Base + 20 * PlaceTableSize
             Computer_Character_Base = Place_Exit_Base + 16 * ItemTableSize
             Spell_Name_Base = Computer_Character_Base + 16 * ComputerCharacterTableSize
             String_Storage_Base_Last = Spell_Name_Base + 16 * SpellDataSize
             Info_Bank = 255
-            Place_Bank = 254
+            Place_BanK1 = 254
             Item_Bank = 255
-            Name_Bank = 254                                   
+            Name_Bank = 254
+            DPOKE 2,$BA00                                   
         ELIF MemoryConfig = 128
             ItemTableSize = 204
             ComputerCharacterTableSize = 256
@@ -1871,8 +1869,8 @@ LOOP
             SpellTableSize = 16
             SpellDataSize = 16
             ItemFieldSize = 20
-            Place_Description_Base = 16384
-            Item_Name_Base = 16384
+            Place_Description_Base = 16384 
+            Item_Description_Base = 16384 
             String_Store_Base = 16384
             GameName_Store = String_Store_Base
             Author_Store = String_Store_Base + 40
@@ -1880,17 +1878,18 @@ LOOP
             Next_File_Store = String_Store_Base + 92
             Intro_Text_Store = String_Store_Base + 104
             Closing_Text_Store = Intro_Text_Store  + 800  
-            Item_Description_Base = Closing_Text_Store + 800
+            Item_Name_Base = Closing_Text_Store + 800
             Place_Exit_Base = Item_Name_Base + 16 * PlaceTableSize
             Computer_Character_Base = Place_Exit_Base + 20 * ItemTableSize
             Spell_Name_Base = Computer_Character_Base + 16 * ComputerCharacterTableSize
             String_Storage_Base_Last = String_Store_Base + 16 * SpellDataSize        
-            Place_Bank = 227
+            Place_BanK1 = 227
             Place_Bank2 = 231
             Place_Field_Size = 128
             Item_Bank = 235
             Info_Bank = 239
-            Name_Bank = 239                                   
+            Name_Bank = 239
+            DPOKE 2,$BA00                                   
         ENDIF
         IF  MemoryConfig <=64  
             POKE 106,152
@@ -1912,6 +1911,8 @@ LOOP
         SureToProceed = 1
         Modified = 0
     ENDIF
+    'Z=USR(@FIELD_PUT,1,2,3,4,5)
+    'Z=USR(@FIELD_GET,1,2,3,4,5)
   ENDPROC
 '------------------------------------------------------------------------------  
 END  
