@@ -1,8 +1,5 @@
-setlocal
-
-set PATH=..\;..\cc65\bin;..\bin;.\fastbasic;..\include;..\fastbasic\asminc;..\lib;..\fastbasic\syntax
-cd ..\
-
-fb "TAGS_ATARI\TG_EDIT.BAS"
-
+cd ..
+fb TGAtari\tg_edit.bas TGAtari\xmove.asm
+cd TGATARI
 pause
+
