@@ -580,28 +580,34 @@ LOOP
    ITEM_INDEX = Total_Items + 1
    REPEAT
        CLS
-       PRINT "Item "; ITEM_INDEX; " type."
-       PRINT " 1 Treasure         22 Heavy container"
-       PRINT " 2 Key              23 Heavy/pushable "
-       PRINT " 3 Weapon           24 Burnable       "
-       PRINT " 4 Ammunition       25 Breakable      "
-       PRINT " 5 Food/Water       26 Heavy breakable"
-       PRINT " 6 Armor/Shield     27 Smasher/Hammer "
-       PRINT " 7 Explosive        28 Immunity       "
-       PRINT " 8 Detonater        29 Needs container" 
-       PRINT " 9 Transport        30 Container      "
-       PRINT "10 Shovel           31 Wound Medicine " 
-       PRINT "11 Climbing tool    32 Poison Antidote"
-       PRINT "12 Document         33 Component/Parts" 
-       PRINT "13 Luminater        34 Shows Text file"
-       PRINT "14 Fuel             35 Healing        " 
-       PRINT "15 Survival         36 Transport      "
-       PRINT "16 Shield points    37 Heavy Container" 
-       PRINT "17 Poison           38 Luminater      "
-       PRINT "18 More turns       39 Kills All      " 
-       PRINT "19 Case/Container   40 Entraps All    " 
-       PRINT "20 Extra life       41 Screen file    "        
-       PRINT "21 More inventory   42 Part of Item   "  
+        POSITION 0,23
+        PRINT "#:";ITEM_INDEX;
+        Z=USR(@FIELD_GET,Item_Name_Base + ItemFieldSize * ITEM_INDEX,ADR(EDIT$(0)),ItemFieldSize,Name_Bank)
+        POSITION 7,23
+        PRINT EDIT$(0);
+        POSITION 0,0
+       PRINT " 1 Treasure         23 Heavy/pushable "
+       PRINT " 2 Key              24 Burnable       "
+       PRINT " 3 Weapon           25 Breakable      "
+       PRINT " 4 Ammunition       26 Heavy breakable"
+       PRINT " 5 Food/Water       27 Smasher/Hammer "
+       PRINT " 6 Armor/Shield     28 Immunity       "
+       PRINT " 7 Explosive        29 Needs container"
+       PRINT " 8 Detonater        30 Container      " 
+       PRINT " 9 Transport        31 Wound Medicine "
+       PRINT "10 Shovel           32 Poison Antidote" 
+       PRINT "11 Climbing tool    33 Component/Parts"
+       PRINT "12 Document         34 Shows Text file" 
+       PRINT "13 Luminater        35 Healing        "
+       PRINT "14 Fuel             36 Transport      " 
+       PRINT "15 Survival         37 Heavy Container"
+       PRINT "16 Shield points    38 Luminater      " 
+       PRINT "17 Poison           39 Kills All      "
+       PRINT "18 More turns       40 Entraps All    " 
+       PRINT "19 Case/Container   41 Screen file    " 
+       PRINT "20 Extra life       42 Part of Item   "        
+       PRINT "21 More inventory   "
+       PRINT "22 Heavy container  "  
        IF DD = 1 
          PRINT "46 Armor/shield 1 "
          PRINT "47 Armor/shield 2 "
@@ -622,10 +628,23 @@ LOOP
                 B = 0
             ENDIF 
         ENDIF
-        EXEC EDIT_TYPE_FLAG 0,23
-        IF a = 28 AND ITEM_INDEX > 0 THEN ITEM_INDEX = ITEM_INDEX - 1 
-        IF a = 29 AND ITEM_INDEX < Total_Items THEN ITEM_INDEX = ITEM_INDEX + 1
-        IF a = 27 or a = 28 or a = 29
+        POSITION 29,23
+        PRINT "TYPE:";
+        EXEC EDIT_TYPE_FLAG 34,23
+        IF a = 28 AND ITEM_INDEX > 1 THEN ITEM_INDEX = ITEM_INDEX - 1 
+        IF a = 29 AND ITEM_INDEX < Total_Items + 1 THEN ITEM_INDEX = ITEM_INDEX + 1
+        IF a = 127
+            EXEC Goto_Index
+            IF B>0 AND B < Total_Items + 1 
+                ITEM_INDEX = B
+            ELIF B > Total_Items
+                ITEM_INDEX = Total_Items + 1
+            ENDIF            
+        ENDIF
+        IF a = 125 
+            ITEM_INDEX = 1
+        ENDIF
+        IF a = 27 or a = 28 or a = 29 or a=125 or a= 127
             Item_Type_In = 253
         ELSE
             Item_Type_In = VAL(EDIT$(0))
@@ -783,7 +802,7 @@ LOOP
                 EXEC BIG_TEXT_EDIT 80,20
                 Z=USR(@FIELD_PUT,Item_Description_Base + 80 * ITEM_INDEX,ADR(EDIT$(0)),80,LEN(EDIT$(0)),Item_BANK)
                 ITEM_INDEX = ITEM_INDEX + 1
-                IF ITEM_INDEX > Total_Items THEN Total_Items = ITEM_INDEX
+                IF ITEM_INDEX > Total_Items AND Total_Items < ItemTableSize THEN Total_Items = ITEM_INDEX
   
 
             'IF O > OB.DIM THEN
@@ -801,7 +820,14 @@ LOOP
      Computer_Character_Index = Total_Computer_Characters + 1
      REPEAT 
        CLS
-       PRINT "Character:";Computer_Character_Index;" Type"
+       CLS
+        POSITION 0,23
+        PRINT "#:";Computer_Character_Index;
+        Z=USR(@FIELD_GET, Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,Name_Bank)
+        POSITION 7,23
+        PRINT EDIT$(0);
+        POSITION 0,0
+       'PRINT "Character:";Computer_Character_Index;" Type"
        PRINT " 1 Shield point damage"
        PRINT " 2 Kills player if not killed first."
        PRINT " 3 Takes away all items"
@@ -826,10 +852,23 @@ LOOP
         ELSE    
             EDIT$(0)=STR$(HT(Computer_Character_Index))
         ENDIF
-        EXEC EDIT_TYPE_FLAG 0,23
-        IF a = 28  AND Computer_Character_Index > 0 THEN Computer_Character_Index = Computer_Character_Index - 1 
-        IF a = 29  AND Computer_Character_Index < Total_Computer_Characters THEN Computer_Character_Index = Computer_Character_Index + 1
-        IF a = 27 or a = 28 or a = 29 
+        POSITION 29,23
+        PRINT "TYPE:";
+        EXEC EDIT_TYPE_FLAG 34,23
+        IF a = 28  AND Computer_Character_Index > 1 THEN Computer_Character_Index = Computer_Character_Index - 1 
+        IF a = 29  AND Computer_Character_Index < Total_Computer_Characters + 1 THEN Computer_Character_Index = Computer_Character_Index + 1
+        IF a = 127
+            EXEC Goto_Index
+            IF B>0 AND B < Total_Computer_Characters + 1 
+                Computer_Character_Index = B
+            ELIF B > Total_Computer_Characters
+                Computer_Character_Index =  Total_Computer_Characters + 1
+            ENDIF            
+        ENDIF
+        IF a = 125 
+            Computer_Character_Index = 1
+        ENDIF
+        IF a = 27 or a = 28 or a = 29 or a = 125 or a = 127
             Computer_Character_Type_In = 253
         ELSE
             Computer_Character_Type_In = VAL(EDIT$(0))
@@ -841,7 +880,7 @@ LOOP
        IF Computer_Character_Type_In > 0 and Computer_Character_Type_In < 20
          HT(Computer_Character_Index) = Computer_Character_Type_In
          CLS
-         PRINT "Hostility "; H
+         PRINT "Computer Character #:"; H
          PRINT "Which place number is the hostility in"
          PRINT " ";Hl(Computer_Character_Index);CHR$(28)
          INPUT  HL(Computer_Character_Index)
@@ -900,7 +939,7 @@ LOOP
           Z=USR(@FIELD_PUT,Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_BANK)
 
          Computer_Character_Index = Computer_Character_Index + 1
-         IF Computer_Character_Index > Computer_Character_Index THEN Total_Computer_Characters = Computer_Character_Index        
+         IF Computer_Character_Index > Computer_Character_Index AND Total_Computer_Characters < ComputerCharacterTableSize THEN Total_Computer_Characters = Computer_Character_Index        
        ENDIF
     UNTIL a=27 or Computer_Character_Type_In = 0
   ENDPROC
@@ -909,8 +948,26 @@ LOOP
    PLACE_INDEX = Total_Places + 1
    REPEAT
         CLS
-        PRINT " Place "; PLACE_INDEX 
-        PRINT
+        POSITION 0,23
+        PRINT "#:";PLACE_INDEX;
+        IF PLACE_INDEX < 128
+          Z=USR(@FIELD_GET, Place_Description_Base+Place_Field_Size*PLACE_INDEX,ADR(EDIT$(0)),Place_Field_Size,Place_BanK1)
+        ELSE
+          N = PLACE_INDEX & 127
+          Z=USR(@FIELD_GET, Place_Description_Base+Place_Field_Size*N,ADR(EDIT$(0)),Place_Field_Size,Place_Bank2)
+        ENDIF
+        N = 0
+        REPEAT
+            N = N + 1
+        UNTIL EDIT$(0)[N,1] <> " "
+        EDIT$(0) = EDIT$(0)[N]
+        IF LEN(EDIT$(0)) > 8
+            IF EDIT$(0)[1,8] = "You are " then EDIT$(0) = EDIT$(0)[9]
+        ENDIF 
+        IF LEN(EDIT$(0))>22 THEN EDIT$(0) = EDIT$(0)[1,22] 
+        POSITION 6,23
+        PRINT EDIT$(0);"..";
+        POSITION 0,0
         PRINT " 1 Normal place."
         PRINT " 2 Game ending trap."
         PRINT " 3 Shield point loosing trap."
@@ -931,10 +988,24 @@ LOOP
         ELSE    
             EDIT$(0)=STR$(RT(PLACE_INDEX))
         ENDIF
-        EXEC EDIT_TYPE_FLAG 0,23
-        IF a = 28  AND PLACE_INDEX > 0 THEN PLACE_INDEX = PLACE_INDEX - 1 
-        IF a = 29  AND PLACE_INDEX < Total_Places THEN PLACE_INDEX = PLACE_INDEX + 1
-        IF a = 27 or a = 28 or a = 29 
+        POSITION 29,23
+        PRINT "TYPE:";
+        EXEC EDIT_TYPE_FLAG 34,23
+
+        IF a = 28  AND PLACE_INDEX > 1 THEN PLACE_INDEX = PLACE_INDEX - 1 
+        IF a = 29  AND PLACE_INDEX < Total_Places + 1 THEN PLACE_INDEX = PLACE_INDEX + 1
+        IF a = 127
+            EXEC Goto_Index
+            IF B > 0 AND B <= Total_Places + 1 
+                PLACE_INDEX = B
+            ELIF B > Total_Places
+                PLACE_INDEX =  Total_Places + 1
+            ENDIF            
+        ENDIF
+        IF a = 125 
+            PLACE_INDEX = 1
+        ENDIF
+        IF a = 27 or a = 28 or a = 29 or a = 125 or a = 127
             Room_Type_In = 253
         ELSE
             Room_Type_In = VAL(EDIT$(0))
@@ -1103,7 +1174,7 @@ LOOP
       ENDIF
         IF Room_Type_In < 16
           PLACE_INDEX = PLACE_INDEX  + 1
-          if PLACE_INDEX > Total_Places then Total_Places = PLACE_INDEX
+          if PLACE_INDEX > Total_Places and Total_Places < PlaceTableSize then Total_Places = PLACE_INDEX
         ENDIF
     UNTIL a=27 or Room_Type_In = 0    
   ENDPROC
@@ -1124,6 +1195,11 @@ LOOP
     ENDIF
     IF MemoryConfig = 64
         Z=USR(@CLEAR_X_BANK,254)
+    ELIF MemoryConfig = 128
+        Z=USR(@CLEAR_X_BANK,227)
+        Z=USR(@CLEAR_X_BANK,231)
+        Z=USR(@CLEAR_X_BANK,235)
+        Z=USR(@CLEAR_X_BANK,239)
     ENDIF
     POKE ADR(OT),0
     MOVE ADR(OT),ADR(OT)+1,5 * ItemTableMax 
@@ -1674,6 +1750,15 @@ LOOP
     PRINT EDIT$(0);EDIT$(1);EDIT$(2) 
     POKE 752,0   
   ENDPROC
+ '------------------------------------------------------------------------------
+  PROC Goto_Index
+            POSITION 0,23
+            PRINT CHR$(156);"GO#";
+            EDIT$(0)=""
+            EXEC EDIT_TYPE_FLAG 4,23
+            B = VAL(EDIT$(0))
+            A = 127
+  ENDPROC
 '------------------------------------------------------------------------------
   PROC EDIT_TYPE_FLAG X_POS Y_POS
     POKE 752,255
@@ -1707,7 +1792,7 @@ LOOP
             EDIT$(0) = ""
           ENDIF
       ENDIF    
-    UNTIL a = 155 OR a = 28 or a = 29 or a = 27
+    UNTIL a = 155 OR a = 28 or a = 29 or a = 27 or a=127 or a = 125
     POSITION X_POS, Y_POS 
     PRINT EDIT$(0);"  ";
     POKE 752,0
@@ -1864,8 +1949,8 @@ LOOP
             DPOKE 2,$BA00                                   
         ELIF MemoryConfig = 128
             ItemTableSize = 204
-            ComputerCharacterTableSize = 256
-            PlaceTableSize = 256
+            ComputerCharacterTableSize = 250
+            PlaceTableSize = 250
             SpellTableSize = 16
             SpellDataSize = 16
             ItemFieldSize = 20
