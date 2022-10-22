@@ -1,4 +1,5 @@
         .segment "PAGE6"
+ ;      .segment "DATA"
         .include "Atari 8-bit Equates.asm"            
 STRING_BUFFER                                             =$02
 NDX0									                  =$CA
@@ -47,8 +48,6 @@ GET_FLD_ADDR = *+1
       STA PORTB
       LDA #64
       STA NMIEN
-      LDA #4
-      STA COLPF1     
 
       LDY FLDSIZE
 COPY_TO_STRING_LOOP:
@@ -96,8 +95,6 @@ FIELD_PUT:
       STA NDX1
       PLA
       STA NDX0
-
-
       LDY STRSIZE
 COPY_TO_PUT_BUFFER_LOOP:
 PUT_STR_ADDR =*+1
@@ -116,6 +113,10 @@ PUT_PORTB_BANK =*+1
       STA PORTB 
 
       LDY STRSIZE
+      CPY FLDSIZE
+      BCC COPY_PUT_FIELD_LOOP
+      DEC FLDSIZE
+      LDY FLDSIZE
 COPY_PUT_FIELD_LOOP:      
       LDA (STRING_BUFFER),Y
       STA (NDX0),Y
@@ -138,8 +139,6 @@ NO_CLEAR_FIELD:
       STA PORTB
       LDA #64
       STA NMIEN
-      LDA #4
-      STA COLPF1     
       RTS
 
 CLEAR_X_BANK:

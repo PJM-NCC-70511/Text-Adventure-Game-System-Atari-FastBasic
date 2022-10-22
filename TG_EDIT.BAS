@@ -113,7 +113,7 @@
   S7 = 0
   S8 = 0
   S9 = 0
-  S10 = 0
+  Inventory_Limit = 0
   S11 = 0
   S12 = 0
   S13 = 0
@@ -158,6 +158,8 @@
   H=0
   I=0
   J=0
+  FP0% = 0
+  FP1% = 0
   Total_Places = 0
   Total_Items = 0
   Total_Computer_Characters = 0
@@ -230,7 +232,6 @@ DO
      Modified = 1
    ENDIF
    SELECTED = A & 63
-   PRINT SELECTED
    IF SELECTED  = 1
         EXEC Edit_Main_Info
     ELIF SELECTED  = 2
@@ -308,12 +309,12 @@ LOOP
 '------------------------------------------------------------------------------  
   PROC Edit_Main_Info
     CLS
-    Z=USR(@FIELD_GET, GameName_Store,ADR(EDIT$(0)),40,Info_Bank)
+    Z=USR(@FIELD_GET, GameName_Store,ADR(EDIT$(0)), 40, Info_Bank)
     PRINT " Name of game"
     EXEC BIG_TEXT_EDIT 40,1 
-    Z=USR(@FIELD_PUT,GameName_Store,ADR(EDIT$(0)),40,LEN(EDIT$(0)),Info_Bank)
+    Z=USR(@FIELD_PUT, GameName_Store, ADR(EDIT$(0)), 40, LEN(EDIT$(0)), Info_Bank)
 
-    Z=USR(@FIELD_GET, Author_Store,ADR(EDIT$(0)),40,Info_Bank)
+    Z=USR(@FIELD_GET, Author_Store, ADR(EDIT$(0)), 40, Info_Bank)
     POSITION 0,3
     PRINT "Author(s)"
     EXEC BIG_TEXT_EDIT 40,4 
@@ -322,7 +323,7 @@ LOOP
     Z=USR(@FIELD_GET, Intro_Text_Store,ADR(EDIT$(0)),255,Info_Bank)
     Z=USR(@FIELD_GET, Intro_Text_Store+255,ADR(EDIT$(1)),255,Info_Bank)
     Z=USR(@FIELD_GET, Intro_Text_Store+510,ADR(EDIT$(2)),249,Info_Bank)  
-    EXEC FIND_STORE_STRING_SIZE Intro_Text_Store,759
+    EXEC FIND_STORE_STRING_SIZE Intro_Text_Store,760
 '   MOVE Intro_Text_Store,ADR(EDIT$(0))+1,255
 '   MOVE Intro_Text_Store+255,ADR(EDIT$(1))+1,255
 '   MOVE Intro_Text_Store+510,ADR(EDIT$(2))+1,255
@@ -354,7 +355,7 @@ LOOP
     Z=USR(@FIELD_GET, Closing_Text_Store,ADR(EDIT$(0)),255,Info_Bank)
     Z=USR(@FIELD_GET, Closing_Text_Store+255,ADR(EDIT$(1)),255,Info_Bank)
     Z=USR(@FIELD_GET, Closing_Text_Store+510,ADR(EDIT$(2)),249,Info_Bank) 
-    EXEC FIND_STORE_STRING_SIZE Closing_Text_Store,759
+    EXEC FIND_STORE_STRING_SIZE Closing_Text_Store,760
     'MOVE Closing_Text_Store,ADR(EDIT$(0))+1,255
     'MOVE Closing_Text_Store+255,ADR(EDIT$(1))+1,255
     'MOVE Closing_Text_Store+510,ADR(EDIT$(2))+1,255
@@ -467,7 +468,7 @@ LOOP
         PRINT " ";S12;CHR$(28)
         INPUT S12
         PRINT "Number of turns before getting food or  water."
-        PRINT " ";S31;CHR$(28)
+        PRINT " ";S13;CHR$(28)
         INPUT S13
         IF DD 
             PRINT "Place number for magician sanctuary"
@@ -484,8 +485,8 @@ LOOP
             PRINT " ";S16;CHR$(28)
             INPUT S16
             PRINT "Maxinum number of objects carried"
-            PRINT " ";S10;CHR$(28)
-            INPUT S10
+            PRINT " ";Inventory_Limit;CHR$(28)
+            INPUT Inventory_Limit
             PRINT "Number of Hit Points gain per turn"
             PRINT " ";S19;CHR$(28)
             INPUT S19
@@ -622,8 +623,8 @@ LOOP
             EDIT$(0) = ""
         ELSE    
             EDIT$(0)=STR$(OT(ITEM_INDEX)&127)
-            IF OT(ITEM_INDEX) > 127 
-                B = 2000
+            IF OV3(ITEM_INDEX) >= 192
+                B  = OV3(ITEM_INDEX)&63  
             ELSE
                 B = 0
             ENDIF 
@@ -765,12 +766,11 @@ LOOP
                 PRINT " ";B + OL(ITEM_INDEX);CHR$(28)
                 INPUT  B
                 If B < 2000 
-                    OL(ITEM_INDEX) = A
-                    OT(ITEM_INDEX) = OT(ITEM_INDEX)&127
-                ELSE
-                    OT(ITEM_INDEX) = OT(ITEM_INDEX)!128        
-                    B =  B - 2000
                     OL(ITEM_INDEX) = B
+                    
+                ELSE
+                    OL(ITEM_INDEX) = B MOD 2000
+                    OV3(ITEM_INDEX) = 192 + B / 2000
                 ENDIF
                 PRINT " What is the item credit value.Enter 0 if no value."
                 PRINT " ";OP(ITEM_INDEX);CHR$(28)
@@ -980,7 +980,7 @@ LOOP
         PRINT "10 Safety/Sanctuary."
         PRINT "11 Password to transport to place."
         PRINT "12 Action to go to place."
-        PRINT "13 Named teleport station."
+        PRINT "13 Named Teleport Station."
         PRINT "14 Unlock doors lock when entered."
         PRINT "15 Return to place when killed."
         IF RT(PLACE_INDEX) = 0 
@@ -1256,136 +1256,137 @@ LOOP
         ELSE
            BPUT #1,Closing_Text_Store,String_Length
         ENDIF
-       Z=USR(@FIELD_GET, Gamename_Store,ADR(EDIT$(0)),40,Info_Bank)
-       PRINT #1, EDIT$(0)  'TITLE_TEXT$
-       Z=USR(@FIELD_GET, Author_Store,ADR(EDIT$(0)),40,Info_Bank)
-       PRINT #1, EDIT$(0)  'AUTHOR_TEXT$
-       Z=USR(@FIELD_GET, Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
-       PRINT #1, EDIT$(0)  'Next Game File
-       Z=USR(@FIELD_GET, Next_File_Store,ADR(EDIT$(0)),12,Info_Bank)
-       PRINT #1, EDIT$(0)  'Monetary Unit Name
-       PRINT #1, "(FE)"
-       PRINT #1, S0
-       PRINT #1, WIN_PLACE
-       PRINT #1, S2
-       PRINT #1, S3
-       PRINT #1, S4
-       PRINT #1, S5
-       PRINT #1, S6
-       PRINT #1, S7
-       PRINT #1, S8
-       PRINT #1, S9
-       PRINT #1, S10
-       PRINT #1, S11
-       PRINT #1, S12
-       PRINT #1, S13
-       PRINT #1, S14
-       PRINT #1, S15
-       PRINT #1, S16
-       PRINT #1, S17
-       PRINT #1, S18
-       PRINT #1, S19
-       PRINT #1, S20
-       PRINT #1, S21
-       PRINT #1, S22
-       PRINT #1, S23
-       PRINT #1, S24
-       PRINT #1, S25
-       PRINT #1, S26
-       PRINT #1, S27
-       PRINT #1, S28
-       PRINT #1, S29
-       PRINT #1, S30
-       PRINT #1, S31
-       PRINT #1, S32
-       PRINT #1, S33
-       PRINT #1, S34
-       PRINT #1, S35
-       PRINT #1, S36
-       PRINT #1, S37
-       PRINT #1, S38
-       PRINT #1, S39
-       PRINT #1, S40
-       PRINT #1, S41
-       PRINT #1, S42
-       PRINT #1, S43
-       PRINT #1, S44
-       PRINT #1, S45
-       PRINT #1, S46
-       PRINT #1, S47
-       PRINT #1, Total_Spells
-       FOR N = 0 TO Total_Spells
+        Z=USR(@FIELD_GET, Gamename_Store,ADR(EDIT$(0)),40,Info_Bank)
+        PRINT #1, EDIT$(0)  'TITLE_TEXT$
+        Z=USR(@FIELD_GET, Author_Store,ADR(EDIT$(0)),40,Info_Bank)
+        PRINT #1, EDIT$(0)  'AUTHOR_TEXT$
+        Z=USR(@FIELD_GET, Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
+        PRINT #1, EDIT$(0)  'Next Game File
+        Z=USR(@FIELD_GET, Next_File_Store,ADR(EDIT$(0)),12,Info_Bank)
+        PRINT #1, EDIT$(0)  'Monetary Unit Name
+        PRINT #1, "(FE)"
+        PRINT #1, S0
+        PRINT #1, WIN_PLACE
+        PRINT #1, S2
+        PRINT #1, S3
+        PRINT #1, S4
+        PRINT #1, S5
+        PRINT #1, S6
+        PRINT #1, S7
+        PRINT #1, S8
+        PRINT #1, S9
+        PRINT #1, Inventory_Limit
+        PRINT #1, S11
+        PRINT #1, S12
+        PRINT #1, S13
+        PRINT #1, S14
+        PRINT #1, S15
+        PRINT #1, S16
+        PRINT #1, S17
+        PRINT #1, S18
+        PRINT #1, S19
+        PRINT #1, S20
+        PRINT #1, S21
+        PRINT #1, S22
+        PRINT #1, S23
+        PRINT #1, S24
+        PRINT #1, S25
+        PRINT #1, S26
+        PRINT #1, S27
+        PRINT #1, S28
+        PRINT #1, S29
+        PRINT #1, S30
+        PRINT #1, S31
+        PRINT #1, S32
+        PRINT #1, S33
+        PRINT #1, S34
+        PRINT #1, S35
+        PRINT #1, S36
+        PRINT #1, S37
+        PRINT #1, S38
+        PRINT #1, S39
+        PRINT #1, S40
+        PRINT #1, S41
+        PRINT #1, S42
+        PRINT #1, S43
+        PRINT #1, S44
+        PRINT #1, S45
+        PRINT #1, S46
+        PRINT #1, S47
+        PRINT #1, Total_Spells
+        FOR N = 0 TO Total_Spells
            Z=USR(@FIELD_GET, Spell_Name_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
            PRINT #1, EDIT$(0)
-       NEXT N
-       PRINT #1, Total_Items
-       FOR N = 1 TO Total_Items
-         B = OT(N)&127 
-         PRINT #1, B
+        NEXT N
+        PRINT #1, Total_Items
+        FOR N = 1 TO Total_Items
+         PRINT #1, Ot(N)
          PRINT #1, Op(N)
-         IF OT(N)&128 = 128 
-            B = OL(N) + 2000
-         ELIF B = 254 
-            B = 500
+         IF OV3(N) >= 1 
+            I = OV3(N)&63
+            FP0% = OL(N) + 2000 * I
+            OV3(N) = 0 
+         ELIF OL(N) = 254 
+            FP0% = 500
          ELSE
-            B = OL(N)
+            FP0% = OL(N)
          ENDIF 
-         PRINT #1, B
+         PRINT #1, FP0%
          PRINT #1, OV(N)
          PRINT #1, OV2(N)
          PRINT #1, OV3(N)   
          Z=USR(@FIELD_GET, Item_Name_Base+ItemFieldSize * N,ADR(EDIT$(0)),ItemFieldSize ,Name_Bank)
          PRINT #1, EDIT$(0) 'ON$(N)
          Z=USR(@FIELD_GET, Item_Description_Base + 80 * N,ADR(EDIT$(0)),80,Item_Bank)
-         IF N  < 204 
-              Z=USR(@FIELD_GET, Computer_Character_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
-         ELSE
-              B = N - 204
-              EDIT$(0) = ""
-         ENDIF
          PRINT #1, EDIT$(0) 'OD$(N)
        NEXT N
     
        PRINT #1, Total_Computer_Characters
        FOR N = 1 TO Total_Computer_Characters
-           PRINT #1, HL(N)
-           PRINT #1, HT(N)
-           PRINT #1, HS(N)
-           PRINT #1, HH(N)
-           PRINT #1, HV(N)
-           PRINT #1, HM(N)
-           PRINT #1, EDIT$(0) 'HN$(N)
+            PRINT #1, HL(N)
+            PRINT #1, HT(N)
+            PRINT #1, HS(N)
+            PRINT #1, HH(N)
+            PRINT #1, HV(N)
+            PRINT #1, HM(N)
+            IF N  < 204 
+                Z=USR(@FIELD_GET, Computer_Character_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
+            ELSE
+                B = N - 204
+                EDIT$(0) = ""
+            ENDIF          
+            PRINT #1, EDIT$(0) 'HN$(N)
        NEXT N    
        PRINT #1, Total_Places
        FOR N = 1 TO Total_Places
-           PRINT #1, RT(N)
-           PRINT #1, RN(N)
-           PRINT #1, RNL(N)
-           PRINT #1, RNK(N)
-           PRINT #1, RW(N)
-           PRINT #1, RWL(N)
-           PRINT #1, RWK(N)
-           PRINT #1, RE(N)
-           PRINT #1, REL(N)
-           PRINT #1, REK(N)
-           PRINT #1, RS(N)
-           PRINT #1, RSL(N)
-           PRINT #1, RSK(N)
-           PRINT #1, RU(N)
-           PRINT #1, RUL(N)
-           PRINT #1, RD(N)
-           PRINT #1, RDL(N)
-           PRINT #1, RO(N)
-           PRINT #1, ROL(N)
-           Z=USR(@FIELD_GET, Place_Exit_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
-           PRINT #1, EDIT$(0) 'REN$(N)
-           PRINT #1, ROV(N)
-           IF N < 128
+            PRINT #1, RT(N)
+            PRINT #1, RN(N)
+            PRINT #1, RNL(N)
+            PRINT #1, RNK(N)
+            PRINT #1, RW(N)
+            PRINT #1, RWL(N)
+            PRINT #1, RWK(N)
+            PRINT #1, RE(N)
+            PRINT #1, REL(N)
+            PRINT #1, REK(N)
+            PRINT #1, RS(N)
+            PRINT #1, RSL(N)
+            PRINT #1, RSK(N)
+            PRINT #1, RU(N)
+            PRINT #1, RUL(N)
+            PRINT #1, RD(N)
+            PRINT #1, RDL(N)
+            PRINT #1, RO(N)
+            PRINT #1, ROL(N)
+            Z=USR(@FIELD_GET, Place_Exit_Base + 16 * N,ADR(EDIT$(0)),16,Name_Bank)
+            PRINT #1, EDIT$(0) 'REN$(N)
+            PRINT #1, ROV(N)
+            IF N < 128
                 Z=USR(@FIELD_GET, Place_Description_Base + Place_Field_Size * N,ADR(EDIT$(0)),Place_Field_Size,Place_BanK1)
-           ELSE
+            ELSE
                 Z=USR(@FIELD_GET, Place_Description_Base + Place_Field_Size * (N&127),ADR(EDIT$(0)),Place_Field_Size,Place_Bank2)
-           ENDIF
-           PRINT #1, EDIT$(0) 'RD$(N)   
+            ENDIF
+            PRINT #1, EDIT$(0) 'RD$(N)   
        NEXT N
      CLOSE #1
      Modified = 0
@@ -1443,7 +1444,7 @@ LOOP
     INPUT #1, S7
     INPUT #1, S8
     INPUT #1, S9
-    INPUT #1, S10
+    INPUT #1, Inventory_Limit
     INPUT #1, S11
     INPUT #1, S12
     INPUT #1, S13
@@ -1494,18 +1495,19 @@ LOOP
     FOR N = 1 TO Total_Items
       INPUT #1, OT(N)
       INPUT #1, Op(N)
-      INPUT #1, B
-      IF B<256
-        OL(N) = B
-      ELIF B>255 AND B<2000
-        OL(N) = 254
-      ELIF B>1999 
-        OL(N) = B - 2000
-        OT(N) = OT(N)!128
-      ENDIF
+      INPUT #1, FP0%
       INPUT #1, OV(N)
       INPUT #1, OV2(N)
       INPUT #1, OV3(N)
+      IF FP0%<256
+        OL(N) = INT(FP0%)
+      ELIF FP0%>255 AND FP0%<2000
+        OL(N) = 254
+      ELIF FP0% > 1999
+        OV3(N) = 192 + INT(FP0% / 2000)
+        I = OV3(N)&63
+        OL(N) = INT(FP0% - (I * 2000))
+      ENDIF
       INPUT #1, EDIT$(0) 'ON$(N)
       Z=USR(@FIELD_PUT,Item_Name_Base + ItemFieldSize * N,ADR(EDIT$(0)),ItemFieldSize ,LEN(EDIT$(0)),Name_Bank)
       'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
@@ -1582,173 +1584,116 @@ LOOP
   ENDPROC
 '------------------------------------------------------------------------------
   PROC BIG_TEXT_EDIT EDIT_STRING_SIZE Y_POS
-    StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
-    CharPosition = StringLength + 1
-    StringPosition = CharPosition
-    StringIndex = 0
-    a  = 126
-    POKE 752,255
-    REPEAT      
+      StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
+      CharPosition = StringLength 
+      StringPosition = CharPosition
+      StringIndex = 0
+      ScreenMemoryLoc = DPEEK(88)+(40*Y_POS) + BIG_TEXT_XPOS 
+      a  = 126
+      POKE 752,255
+      
       POSITION BIG_TEXT_XPOS,Y_POS  
-      IF a = 126 or a = 254 or a = 251
-        PRINT EDIT$(0);EDIT$(1);EDIT$(2);"  "
-      ELSE
-        IF StringIndex = 0
-            IF StringPosition < 128 
-              N = LEN(EDIT$(0))
-              IF N > 128 THEN N=128
-              POSITION BIG_TEXT_XPOS,Y_POS 
-              PRINT EDIT$(0)[1,N]       
-            ELSE
-              POSITION 7,Y_POS + 3
-              PRINT EDIT$(0)[128]                   
-            ENDIF
-        ELIF StringIndex = 1
-            IF StringPosition < 128
-              N = LEN(EDIT$(1))
-              IF N > 128 THEN N=128
-              POSITION 15,Y_POS + 6
-              PRINT EDIT$(1)[1,N]       
-            ELSE
-              POSITION 22,Y_POS + 9
-              PRINT EDIT$(1)[128]                   
-            ENDIF
-        ELIF StringIndex = 2
-            N = LEN(EDIT$(2))
-            IF StringPosition < 128
-                N = LEN(EDIT$(2))
-                IF N > 128 THEN N=128
-                POSITION 30,Y_POS + 12
-                PRINT EDIT$(2)[1,N]
-            ELSE
-                POSITION 37,Y_POS + 15
-                PRINT EDIT$(2)[128]
-            ENDIF
+      PRINT EDIT$(0);EDIT$(1);EDIT$(2);"  "
+      REPEAT      
+        IF CharPosition < 256
+          StringIndex = 0
+          StringPosition = CharPosition
+        ELIF CharPosition > 255 AND CharPosition < 511
+          StringIndex = 1
+          StringPosition = CharPosition - 255
+        ELIF CharPosition > 510  
+          StringIndex = 2
+          StringPosition = CharPosition - 510
         ENDIF
-      ENDIF
-      IF CharPosition < 256
-        StringIndex = 0
-        StringPosition = CharPosition
-      ELIF CharPosition > 255 AND CharPosition < 511
-        StringIndex = 1
-        StringPosition = CharPosition - 255
-      ELIF CharPosition > 510  
-        StringIndex = 2
-        StringPosition = CharPosition - 510
-      ENDIF
-      IF CharPosition > StringLength  
-        A = 32
-      ELSE
-        A = ASC(EDIT$(StringIndex)[StringPosition,1])
-      ENDIF
-      POSITION BIG_TEXT_XPOS + (CharPosition-1) MOD 40, Y_POS + (CharPosition-1) / 40
-      PRINT CHR$(A!128);   
-      REPEAT
-              k = KEY()
-      UNTIL k>0
-      POSITION BIG_TEXT_XPOS + (CharPosition-1) MOD 40, Y_POS + (CharPosition-1) / 40
-      PRINT CHR$(A&127);      
-    '' POSITION 0,0
-      GET A
-    '' PRINT k;"  ",A;"  "
-      IF (a>0 and a<27) or (a>31 and a<125) 
-          IF StringLength < EDIT_STRING_SIZE
-            IF CharPosition>=StringLength
-                EDIT$(StringIndex) =+ CHR$(A)
-                StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
-                if CharPosition>=StringLength and StringLength < EDIT_STRING_SIZE THEN CharPosition = StringLength + 1
-            ELSE
-                IF LEN(EDIT$(StringIndex)) = 255 
-                    IF StringIndex < 2
-                        FOR N = 1 TO StringIndex STEP - 1
-                          TEMP1$ = EDIT$(N+1)[1]
-                          EDIT$(N+1) = EDIT$(N)[255,1] 
-                          EDIT$(N+1) =+ TEMP1$ 
-                          EDIT$(N) = EDIT$(N)[1,254]
-                        NEXT N
-                    ENDIF
-                ENDIF
-                TEMP1$ = EDIT$(StringIndex)[StringPosition]
-                EDIT$(StringIndex) = EDIT$(StringIndex)[1,StringPosition-1]
-                EDIT$(StringIndex) =+ CHR$(A)
-                EDIT$(StringIndex) =+ TEMP1$
-                CharPosition = CharPosition + 1 
-                a = 251
-            ENDIF
+        K = PEEK(ScreenMemoryLoc + CharPosition)
+        POKE ScreenMemoryLoc + CharPosition +0,K!128
+        REPEAT
+                k = KEY()
+        UNTIL k>0      
+        POSITION BIG_TEXT_XPOS + (CharPosition-1) MOD 40, Y_POS + (CharPosition-1) / 40
+        K = PEEK(ScreenMemoryLoc + CharPosition)
+        POKE ScreenMemoryLoc + CharPosition +0,K&127
+      '' POSITION 0,0
+        GET A
+      '' PRINT k;"  ",A;"  "
+        IF (a>0 and a<27) or (a>31 and a<125) 
+              A = A&127
+              IF A < 32  
+                  K = A + 64
+              ELIF A < 96 
+                  K = A - 32
+              ELSE
+                  K = A
+              ENDIF
+              -MOVE ScreenMemoryLoc + CharPosition, ScreenMemoryLoc + CharPosition + 1, EDIT_STRING_SIZE - CharPosition - 1
+              POKE ScreenMemoryLoc + CharPosition +0,K
+              IF CharPosition < EDIT_STRING_SIZE THEN CharPosition = CharPosition + 1                              
+        ELIF a = 126 OR a = 254
+              IF a = 126 
+                c  = CharPosition 
+              ELIF a = 254
+                c  = CharPosition - 1
+              ENDIF
+              MOVE ScreenMemoryLoc + C, ScreenMemoryLoc + C - 1, EDIT_STRING_SIZE - C 
+              POKE ScreenMemoryLoc + EDIT_STRING_SIZE - 1,0
+              IF CharPosition >= 1 and a = 126 THEN CharPosition = CharPosition - 1
+              if CharPosition >= StringLength and a=254 THEN CharPosition = StringLength + 1          
+        ELIF A=28
+            if CharPosition > 40 then CharPosition = CharPosition - 40
+        ELIF A=29
+             if StringLength>40 
+               if c < StringLength - 38 then CharPosition = CharPosition + 40
+               if CharPosition>=StringLength THEN CharPosition = StringLength + 1 
+             endif
+        ELIF A=30  
+              if CharPosition > 0 then CharPosition = CharPosition - 1
+        ELIF A=31 
+              if CharPosition < StringLength then CharPosition = CharPosition + 1
+              if CharPosition >=StringLength THEN CharPosition = StringLength 
+        ENDIF
+        StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
+      UNTIL A = 155
+      EDIT$(0)=""
+      EDIT$(1)=""
+      EDIT$(2)=""
+      M = 2047
+      POKE 54286,0
+      POKE 54272,0
+      FOR N = 0 TO EDIT_STRING_SIZE - 1
+          IF N < 255
+            StringIndex = 0 
+          ELIF N > 254 AND N < 510
+            StringIndex = 1
+          ELIF N > 509 
+            StringIndex = 2
+          ENDIF
+          A = PEEK(ScreenMemoryLoc + N)
+          IF A = 0 
+              K = 32
+              IF M = 2047 THEN M = N
+          ELIF A <= 63
+              K = A + 32
+          ELIF A <= 95
+              K = A - 64
           ELSE
-          
+              K = A
           ENDIF
-      ELIF a = 126 OR a = 254
-          IF a = 126 
-            c  = StringPosition - 1
-          ELIF a = 254
-            c  = StringPosition 
-          ENDIF
-          IF CharPosition>=StringLength and a = 126
-            CharPosition = StringLength + 1
-            IF CharPosition > 1  
-              EDIT$(StringIndex) = EDIT$(StringIndex)[1,c-1]
-              CharPosition = CharPosition - 1
-            ELSE
-              CharPosition = 1
-              EDIT$(0) = ""
-              EDIT$(1) = ""
-              EDIT$(2) = ""
+          IF A >=1
+            IF M<=2046
+               FOR I=M TO N-1
+                  POKE ScreenMemoryLoc + I,32
+                  EDIT$(StringIndex)=+CHR$(32)                   
+               NEXT I
+               M=2047 
             ENDIF
-          ELSE
-              FOR N  = STRINGINDEX TO 2
-                IF N = STRINGINDEX 
-                    IF c > 1 and c < LEN(EDIT$(N)) - 1
-                        TEMP1$ = EDIT$(N)[c+1]
-                    ELSE
-                        TEMP1$ = ""
-                    ENDIF
-                    IF StringPosition > 1 
-                        EDIT$(N) = EDIT$(N)[1,c-1]
-                    ELSE
-                        EDIT$(N) = ""
-                    ENDIF
-                    EDIT$(N) =+ TEMP1$
-                ENDIF
-                IF N > STRINGINDEX AND N < 2 
-                    IF LEN(EDIT$(N+1)) > 0
-                      TEMP1$ = EDIT$(N + 1)[1,1]
-                      EDIT$(N) =+ TEMP1$
-                    ENDIF                 
-                    IF LEN(EDIT$(N+1)) > 1       
-                      TEMP1$ = EDIT$(N + 1)[2]
-                      EDIT$(N+1) = TEMP1$
-                    ELSE
-                      EDIT$(N+1) = ""
-                    ENDIF  
-                ENDIF
-                IF N = 2 AND STRINGINDEX < 2
-                  
-                ENDIF                                         
-              NEXT N
-              IF CharPosition > 1 and a = 126 THEN CharPosition = CharPosition - 1
-              if CharPosition >= StringLength and a=254 THEN CharPosition = StringLength + 1
-          ENDIF
-      ELIF A=28
-          if CharPosition > 40 then CharPosition = CharPosition - 40
-      ELIF A=29
-           if StringLength>40 
-             if c < StringLength - 38 then CharPosition = CharPosition + 40
-             if CharPosition>=StringLength THEN CharPosition = StringLength + 1 
-           endif
-      ELIF A=30  
-            if CharPosition > 1 then CharPosition = CharPosition - 1
-      ELIF A=31 
-            if CharPosition <= StringLength then CharPosition = CharPosition + 1
-            if CharPosition>=StringLength THEN CharPosition = StringLength + 1
-      ENDIF
-      StringLength = len(EDIT$(0))
-      StringLength = StringLength + len(EDIT$(1))
-      StringLength = StringLength + len(EDIT$(2))  
-    UNTIL A = 155
-    POSITION BIG_TEXT_XPOS,Y_POS 
-    PRINT EDIT$(0);EDIT$(1);EDIT$(2) 
-    POKE 752,0   
+            POKE ScreenMemoryLoc+N,K
+            EDIT$(StringIndex)=+CHR$(K)    
+          ENDIF  
+      NEXT N                   
+      POKE 54286,64
+      POKE 752,0
+      POSITION BIG_TEXT_XPOS,Y_POS 
+      PRINT EDIT$(0);EDIT$(1);EDIT$(2)
   ENDPROC
  '------------------------------------------------------------------------------
   PROC Goto_Index
@@ -1938,8 +1883,8 @@ LOOP
             Closing_Text_Store = Intro_Text_Store  + 760  
             Item_Description_Base = Closing_Text_Store + 760 
             Item_Name_Base = 49152
-            Place_Exit_Base = Item_Name_Base + 20 * PlaceTableSize
-            Computer_Character_Base = Place_Exit_Base + 16 * ItemTableSize
+            Place_Exit_Base = Item_Name_Base + 20 * ItemTableSize
+            Computer_Character_Base = Place_Exit_Base + 16 * PlaceTableSize
             Spell_Name_Base = Computer_Character_Base + 16 * ComputerCharacterTableSize
             String_Storage_Base_Last = Spell_Name_Base + 16 * SpellDataSize
             Info_Bank = 255
@@ -1995,7 +1940,7 @@ LOOP
     ELSE
         SureToProceed = 1
         Modified = 0
-    ENDIF
+    ENDIF                                   
     'Z=USR(@FIELD_PUT,1,2,3,4,5)
     'Z=USR(@FIELD_GET,1,2,3,4,5)
   ENDPROC
