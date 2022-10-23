@@ -45,6 +45,7 @@
   ComputerCharacterTableSize = 20
   PlaceTableSize = 38
   SureToProceed = 0
+  FileName$=""
   OPEN #1,4,0,"D:TAGSETUP.TGD"
   IF err()=1 
      INPUT #1,MemoryConfig
@@ -247,14 +248,14 @@ DO
     ELIF SELECTED  = 7 
         PROMPT$ = "FILE TO SAVE "
         EXEC DISK_DIRECTORY
-        EXEC Save_file
+        IF LEN(FileName$)>2 then EXEC Save_file
     ELIF SELECTED  = 8 
         EXEC SURE
         IF SureToProceed = 1 
           PROMPT$ = "FILE TO LOAD "
           EXEC CLEAR_GAME_MEMORY
           EXEC DISK_DIRECTORY        
-          EXEC Load_File
+          IF LEN(FileName$)>2 then EXEC Load_File
         ENDIF
     ''  IF NOT SURE$ = "C" THEN GOSUB Load_file
     ELIF SELECTED  = 9
@@ -1625,25 +1626,33 @@ LOOP
               ELSE
                   K = A
               ENDIF
-              -MOVE ScreenMemoryLoc + CharPosition, ScreenMemoryLoc + CharPosition + 1, EDIT_STRING_SIZE - CharPosition - 1
+              IF CharPosition < EDIT_STRING_SIZE - 1 THEN -MOVE ScreenMemoryLoc + CharPosition, ScreenMemoryLoc + CharPosition + 1, EDIT_STRING_SIZE - CharPosition - 1
               POKE ScreenMemoryLoc + CharPosition +0,K
-              IF CharPosition < EDIT_STRING_SIZE THEN CharPosition = CharPosition + 1                              
+              IF CharPosition < EDIT_STRING_SIZE -1 then CharPosition = CharPosition + 1
+              IF CharPosition > StringLength then StringLength = CharPosition  
         ELIF a = 126 OR a = 254
               IF a = 126 
-                c  = CharPosition 
+                c  = CharPosition    
               ELIF a = 254
-                c  = CharPosition - 1
+                if CharPosition >= EDIT_STRING_SIZE - 1
+                    c  = -1
+                else 
+                    c  = CharPosition + 1
+                endif
               ENDIF
-              MOVE ScreenMemoryLoc + C, ScreenMemoryLoc + C - 1, EDIT_STRING_SIZE - C 
-              POKE ScreenMemoryLoc + EDIT_STRING_SIZE - 1,0
-              IF CharPosition >= 1 and a = 126 THEN CharPosition = CharPosition - 1
-              if CharPosition >= StringLength and a=254 THEN CharPosition = StringLength + 1          
+              IF c >=0
+                  MOVE ScreenMemoryLoc + C, ScreenMemoryLoc + C - 1, EDIT_STRING_SIZE - C 
+                  POKE ScreenMemoryLoc + EDIT_STRING_SIZE - 1,0
+                  IF CharPosition >= 1 and a = 126 THEN CharPosition = CharPosition - 1
+                  IF CharPosition >= StringLength and a=254 THEN CharPosition = StringLength + 1
+                  IF StringLength >=1 THEN StringLength = StringLength -1          
+              ENDIF                
         ELIF A=28
             if CharPosition > 40 then CharPosition = CharPosition - 40
         ELIF A=29
              if StringLength>40 
-               if c < StringLength - 38 then CharPosition = CharPosition + 40
-               if CharPosition>=StringLength THEN CharPosition = StringLength + 1 
+               if c < StringLength - 38 then CharPosition = CharPosition + 40 
+               if CharPosition>=StringLength THEN CharPosition = StringLength  
              endif
         ELIF A=30  
               if CharPosition > 0 then CharPosition = CharPosition - 1
@@ -1651,49 +1660,38 @@ LOOP
               if CharPosition < StringLength then CharPosition = CharPosition + 1
               if CharPosition >=StringLength THEN CharPosition = StringLength 
         ENDIF
-        StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
+        ' StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
       UNTIL A = 155
       EDIT$(0)=""
       EDIT$(1)=""
-      EDIT$(2)=""
-      M = 2047
+      EDIT$(2)=""      
+      K = PEEK(ScreenMemoryLoc + CharPosition)
+      POKE ScreenMemoryLoc + CharPosition +0,K&127
+      StringLength=USR(@SCR2ATASCII,ScreenMemoryLoc,EDIT_STRING_SIZE - 1)    
       POKE 54286,0
       POKE 54272,0
-      FOR N = 0 TO EDIT_STRING_SIZE - 1
-          IF N < 255
-            StringIndex = 0 
-          ELIF N > 254 AND N < 510
-            StringIndex = 1
-          ELIF N > 509 
-            StringIndex = 2
-          ENDIF
-          A = PEEK(ScreenMemoryLoc + N)
-          IF A = 0 
-              K = 32
-              IF M = 2047 THEN M = N
-          ELIF A <= 63
-              K = A + 32
-          ELIF A <= 95
-              K = A - 64
-          ELSE
-              K = A
-          ENDIF
-          IF A >=1
-            IF M<=2046
-               FOR I=M TO N-1
-                  POKE ScreenMemoryLoc + I,32
-                  EDIT$(StringIndex)=+CHR$(32)                   
-               NEXT I
-               M=2047 
+      IF StringLength > 255 
+            IF StringLength > 510 
+                  M = StringLength - 510
+                  MOVE ScreenMemoryLoc+510,ADR(EDIT$(2))+1,M  
+                  POKE ADR(EDIT$(2)),M                  
+                  M = 255
+            ELSE
+                  M = StringLength - 255                  
             ENDIF
-            POKE ScreenMemoryLoc+N,K
-            EDIT$(StringIndex)=+CHR$(K)    
-          ENDIF  
-      NEXT N                   
+            MOVE ScreenMemoryLoc+255,ADR(EDIT$(1))+1,M  
+            POKE ADR(EDIT$(1)),M 
+            M = 255
+      ELSE
+            M = StringLength  
+      ENDIF
+      MOVE ScreenMemoryLoc,ADR(EDIT$(0))+1,M  
+      POKE ADR(EDIT$(0)),M 
+      POSITION BIG_TEXT_XPOS,Y_POS
+      PRINT EDIT$(0);EDIT$(1);EDIT$(2)
       POKE 54286,64
       POKE 752,0
       POSITION BIG_TEXT_XPOS,Y_POS 
-      PRINT EDIT$(0);EDIT$(1);EDIT$(2)
   ENDPROC
  '------------------------------------------------------------------------------
   PROC Goto_Index
@@ -1750,38 +1748,53 @@ LOOP
       UNTIL PEEK(String_Addr_Start + String_Length-1)>0 OR String_Length = 0  
    ENDPROC
 '------------------------------------------------------------------------------
-    PROC DISK_DIRECTORY
-        CLS
-        A = 0
-        B = 1
-        PRINT "TEXT GAMES ON THIS DISK."
-        OPEN #1,6,0,"D:*.TGF*"
+    PROC DISK_DIRECTORY  
+        EDIT$(3) = "D1:*.TGF"
         REPEAT
-            POSITION A,B 
-            INPUT #1,EDIT$(0)
-            IF ERR()=1 THEN PRINT EDIT$(0)
-            A = A + 20
-            IF A > 25 
-                A = 0
-                B = B + 1
-            ENDIF
-        UNTIL ERR()>1
-        POSITION 0,22
-        PRINT PROMPT$;">";FileName$
-        POSITION 12,22
-        INPUT ">>";FileName$
-        IF FileName$<>""
-            IF FileName$[2,1]<>":" and FileName$[3,1]<>":" 
-                  EDIT$(0) = FileName$
-                  Filename$ = "D:"
-                  Filename$ =+EDIT$(0)
-            ENDIF
-            A = LEN(FileName$) - 4
-            IF A < 1 THEN A = 1
-            IF FileName$[A,4]<>".TGF"
-                  Filename$ =+".TGF"
-            ENDIF
-        ENDIF
+              CLS
+              A = 0
+              B = 1        
+              PRINT "TEXT GAMES ON THIS DISK. ";EDIT$(3)[1,2]
+              OPEN #1,6,0,EDIT$(3)
+              REPEAT
+                  POSITION A,B 
+                  INPUT #1,EDIT$(0)
+                  IF ERR()=1 THEN PRINT EDIT$(0)
+                  A = A + 20
+                  IF A > 25 
+                      A = 0
+                      B = B + 1
+                  ENDIF
+              UNTIL ERR()>1
+              CLOSE #1
+              POSITION 0,22
+              PRINT PROMPT$;">";FileName$
+              POSITION 12,22
+              INPUT ">>";FileName$
+              IF FileName$<>""
+                  J = LEN(FileName$) 
+                  I = ASC(FileName$[J,1])
+                  IF J>0 AND J<=2 AND I>47 AND I<58 
+                      EDIT$(3) = "D"
+                      EDIT$(3) =+ CHR$(I)
+                      EDIT$(3) =+":*.TGF"
+                  ELSE                    
+                    IF J > 0 
+                        IF FileName$[2,1]<>":" and FileName$[3,1]<>":" 
+                              EDIT$(0) = FileName$
+                              Filename$ = EDIT$(3)[1,3]
+                              Filename$ =+EDIT$(0)
+                        ENDIF
+                        A = LEN(FileName$) - 4
+                        IF A < 1 THEN A = 1
+                        IF FileName$[A,4]<>".TGF"
+                              Filename$ =+".TGF"
+                        ENDIF
+                    ENDIF
+                    EDIT$(3) = "FILE OK"
+                  ENDIF
+              ENDIF
+        UNTIL EDIT$(3) = "FILE OK"
     ENDPROC
 '------------------------------------------------------------------------------    
     PROC Get_Memory_Configuration
