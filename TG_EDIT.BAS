@@ -3,7 +3,7 @@
 '***             IBM PC & Compatibles QuickBasic Version 1.00            ***
 '***                 Program written by Peter J. Meyer                   ***
 '***************************************************************************
-' Modified (1.00-10/93) (1.01-06/94)
+' Modified (1.00-10/93) (1.01-06/94) (1.50-10/2022)
 '
 '     This program is used to edit text adventure game files, big text files,
 ' screen files,  and graphic files.  Most functions are self explanitory.  If
@@ -14,10 +14,10 @@
 ' the Atari 8-bit computers with 128K or larger.  Program was created in 1987
 ' and was  upgraded several times.  The QuickBasic version  was imported from
 ' BASIC XE, by using a translating program, then uploading in ASCII, Removing
-' the linenumbers with the "REMLINE.BAS" program, and then modifying the code
-' to get the finished program.  Both  are  very similar  in  performance  and
-' most of the Text Adventure codes are similar.
-'
+' the  linenumbers.  Plans are  in progress  to port  to Visual Basic.NET  to 
+' have the games  properly run in Winsows.  Plus this  Fast Basic port brings 
+' the program  and games back  to the Atari 8-bit , and able to run on a wide 
+' range computers with different memories available. 
 
   MemoryConfig = 48
   String_Store_Base = 38912
@@ -106,19 +106,19 @@
   PLC = 0
   S0 = 0
   WIN_PLACE = 0 'S1
-  S2 = 0
-  S3 = 0
-  S4 = 0
-  S5 = 0
-  S6 = 0
-  S7 = 0
-  S8 = 0
+  WIN_ITEM_01 = 0
+  WIN_ITEM_02 = 0
+  WIN_ITEM_03 = 0
+  WIN_DEFEAT_01 = 0
+  WIN_MONETARY = 0
+  WIN_ITEM_04 = 0
+  Start_Shield_Points = 0
   S9 = 0
   Inventory_Limit = 0
-  S11 = 0
-  S12 = 0
-  S13 = 0
-  S14 = 0
+  Computer_Character_Move_Set = 0
+  Total_Turns = 0
+  Food_Turn_Set = 0
+  Starting_Place_Number = 0
   S15 = 0
   S16 = 0
   S17 = 0
@@ -132,18 +132,18 @@
   S25 = 0
   S26 = 0
   S27 = 0
-  S28 = 0
+  RANDOM_SEED = 0
   S29 = 0
-  S30 = 0
-  S31 = 0
-  S32 = 0
-  S33 = 0
-  S34 = 0
-  S35 = 0
-  S36 = 0
-  S37 = 0
-  S38 = 0
-  S39 = 0
+  WIN_ITEM_05 = 0
+  WIN_ITEM_06 = 0
+  WIN_ITEM_07 = 0
+  WIN_ITEM_08 = 0
+  WIN_ITEM_09 = 0
+  WIN_ITEM_10 = 0
+  WIN_DEFEAT_02 = 0
+  WIN_DEFEAT_03 = 0
+  WIN_DEFEAT_04 = 0
+  WIN_DEFEAT_04 = 0
   S40 = 0
   S41 = 0
   S42 = 0
@@ -393,61 +393,61 @@ LOOP
     CLS
     PRINT "Objects must have to win"
     PRINT "1st"
-    PRINT " ";S2;CHR$(28)
-    INPUT S2
+    PRINT " ";WIN_ITEM_01;CHR$(28)
+    INPUT WIN_ITEM_01
     PRINT "2nd"
-    PRINT " ";S3;CHR$(28)
-    INPUT S3
+    PRINT " ";WIN_ITEM_02;CHR$(28)
+    INPUT WIN_ITEM_02
     PRINT "3rd"
-    PRINT " ";S4;CHR$(28)
-    INPUT S4
+    PRINT " ";WIN_ITEM_03;CHR$(28)
+    INPUT WIN_ITEM_03
     PRINT "4th"
-    PRINT " ";S7;CHR$(28)
-    INPUT S7
+    PRINT " ";WIN_ITEM_04;CHR$(28)
+    INPUT WIN_ITEM_04
     PRINT "5th"
-    PRINT " ";S30;CHR$(28)
-    INPUT S30
+    PRINT " ";WIN_ITEM_05;CHR$(28)
+    INPUT WIN_ITEM_05
     PRINT "6th"
-    PRINT " ";S31;CHR$(28)
-    INPUT S31
+    PRINT " ";WIN_ITEM_06;CHR$(28)
+    INPUT WIN_ITEM_06
     PRINT "7th"
-    PRINT " ";S32;CHR$(28)
-    INPUT S32
+    PRINT " ";WIN_ITEM_07;CHR$(28)
+    INPUT WIN_ITEM_07
     PRINT "8th"
-    PRINT " ";S33;CHR$(28)
-    INPUT S33
+    PRINT " ";WIN_ITEM_08;CHR$(28)
+    INPUT WIN_ITEM_08
     PRINT "9th"
-    PRINT " ";S34;CHR$(28)
-    INPUT S34
+    PRINT " ";WIN_ITEM_09;CHR$(28)
+    INPUT WIN_ITEM_09
     PRINT "10th"
-    PRINT " ";S35;CHR$(28)
-    INPUT S35
+    PRINT " ";WIN_ITEM_10;CHR$(28)
+    INPUT WIN_ITEM_10
     CLS
     PRINT "Hostilities must defeat to win"
     PRINT "1st"
-    PRINT " ";S5;CHR$(28)
-    INPUT S5
+    PRINT " ";WIN_DEFEAT_01;CHR$(28)
+    INPUT WIN_DEFEAT_01
     PRINT "2nd"
-    PRINT " ";S36;CHR$(28)
-    INPUT S36
+    PRINT " ";WIN_DEFEAT_02;CHR$(28)
+    INPUT WIN_DEFEAT_02
     PRINT "3rd"
-    PRINT " ";S37;CHR$(28)
-    INPUT S37
+    PRINT " ";WIN_DEFEAT_03;CHR$(28)
+    INPUT WIN_DEFEAT_03
     PRINT "4th"
-    PRINT " ";S38;CHR$(28)
-    INPUT S38
+    PRINT " ";WIN_DEFEAT_04;CHR$(28)
+    INPUT WIN_DEFEAT_04
     PRINT "5th"
-    PRINT " ";S39;CHR$(28)
-    INPUT S39
+    PRINT " ";WIN_DEFEAT_04;CHR$(28)
+    INPUT WIN_DEFEAT_05
     PRINT "Monetary units required to win."
-    PRINT " ";S6;CHR$(28)
-    INPUT S6
+    PRINT " ";WIN_MONETARY;CHR$(28)
+    INPUT WIN_MONETARY
     PRINT "Starting place number"
-    PRINT " ";S14;CHR$(28)
-    INPUT S14
+    PRINT " ";Starting_Place_Number;CHR$(28)
+    INPUT Starting_Place_Number
     PRINT "Starting number of shield points"
-    PRINT " ";S8;CHR$(28)
-    INPUT S8
+    PRINT " ";Start_Shield_Points;CHR$(28)
+    INPUT Start_Shield_Points
     PRINT "How many credit units at start of game."
     PRINT " ";S22;CHR$(28)
     INPUT S22    
@@ -463,14 +463,14 @@ LOOP
         PRINT "1 All at new loacation every move. "
         PRINT "2 All move start of each turn."
         PRINT "3 Controlled by the hostility data."
-        PRINT " ";S11;CHR$(28)
-        INPUT S11
+        PRINT " ";Computer_Character_Move_Set;CHR$(28)
+        INPUT Computer_Character_Move_Set
         PRINT "Number of turns to solve games."
-        PRINT " ";S12;CHR$(28)
-        INPUT S12
+        PRINT " ";Total_Turns;CHR$(28)
+        INPUT Total_Turns
         PRINT "Number of turns before getting food or  water."
-        PRINT " ";S13;CHR$(28)
-        INPUT S13
+        PRINT " ";Food_Turn_Set;CHR$(28)
+        INPUT Food_Turn_Set
         IF DD 
             PRINT "Place number for magician sanctuary"
             INPUT S15
@@ -544,8 +544,8 @@ LOOP
         INPUT S27
         PRINT "Randomization:"
         PRINT "0 To randomize to timer, anyother to randomize to that number."
-        PRINT " ";S28;CHR$(28)
-        INPUT S28
+        PRINT " ";RANDOM_SEED;CHR$(28)
+        INPUT RANDOM_SEED
         PRINT "Enter 1 to load next file when solved."
         PRINT "      2 Must solve other file first."
         PRINT " ";S20;CHR$(28)
@@ -908,7 +908,7 @@ LOOP
            PRINT " ";HH(Computer_Character_Index);CHR$(28)
            INPUT  HH(Computer_Character_Index)
          ENDIF
-         IF S11 = 3
+         IF Computer_Character_Move_Set = 3
            CLS
            PRINT "1 Character is stationary"
            PRINT "2 New location for every turn"
@@ -1016,88 +1016,33 @@ LOOP
         IF Room_Type_In > 0 and Room_Type_In < 16 
           IF Room_Type_In <> 8
               RT(PLACE_INDEX) = Room_Type_In
-              PRINT " Place "; PLACE_INDEX
-              PRINT "North exit. 0-No exit. 1-Open.          2-Unlocked. 3-Is locked. 4-Secret exit. 5-Password to open."
-              PRINT " ";RN(PLACE_INDEX);CHR$(28)
-              INPUT RN(PLACE_INDEX)
-              IF RN(PLACE_INDEX) > 0
-                PRINT " What place number it leads to"
-                PRINT " ";RNL(PLACE_INDEX);CHR$(28)
-                INPUT RNL(PLACE_INDEX)
-                IF RN(PLACE_INDEX) = 2 OR RN(PLACE_INDEX) = 3
-                  PRINT " What key item number"
-                  PRINT " ";RNK(PLACE_INDEX);CHR$(28)
-                  INPUT RNK(PLACE_INDEX)
-                ENDIF
-                IF RN(PLACE_INDEX) = 5
-                  PRINT " What password/spell number."
-                  PRINT " ";RNK(PLACE_INDEX);CHR$(28)
-                  INPUT RNK(PLACE_INDEX)
-                ENDIF
-              ENDIF
+              PRINT " Place "; PLACE_INDEX; "    North Exit"
+              EXEC Show_Exit_Options RN(PLACE_INDEX),RNK(PLACE_INDEX),RNL(PLACE_INDEX)
+              RN(PLACE_INDEX) = H
+              RNK(PLACE_INDEX) = I
+              RNL(PLACE_INDEX) = J
               CLS
-              PRINT " Place "; PLACE_INDEX
-              PRINT "West exit. 0-No exit. 1-Open.           2-Unlocked. 3-Is locked. 4-Secret exit. 5-Password to open."
-              PRINT " ";RW(PLACE_INDEX);CHR$(28)
-              INPUT RW(PLACE_INDEX)
-              IF RW(PLACE_INDEX) > 0
-                PRINT " What place number it leads to"
-                PRINT " ";RWL(PLACE_INDEX);CHR$(28)
-                INPUT RWL(PLACE_INDEX)
-                IF RW(PLACE_INDEX) = 2 OR RW(PLACE_INDEX) = 3
-                  PRINT " What key item number"
-                  PRINT " ";REK(PLACE_INDEX);CHR$(28)
-                  INPUT RWK(PLACE_INDEX)
-                ENDIF
-                IF RW(PLACE_INDEX) = 5
-                  PRINT " What password/spell number."
-                  PRINT " ";RWK(PLACE_INDEX);CHR$(28)
-                  INPUT RWK(PLACE_INDEX)
-                ENDIF
-              ENDIF
+              PRINT " Place "; PLACE_INDEX ; "   West Exit."
+              EXEC Show_Exit_Options RW(PLACE_INDEX),RWK(PLACE_INDEX),RWL(PLACE_INDEX)
+              RW(PLACE_INDEX) = H
+              RWK(PLACE_INDEX) = I
+              RWL(PLACE_INDEX) = J
               CLS
-              PRINT " Place "; R
-              PRINT "East exit. 0-No exit. 1-Open.           2-Unlocked. 3-Is locked. 4-Secret exit. 5-Password to open."
-              PRINT " ";RE(PLACE_INDEX);CHR$(28)
-              INPUT RE(PLACE_INDEX)
-              IF RE(PLACE_INDEX) > 0
-                PRINT "What place number it leads to"
-                PRINT " ";REL(PLACE_INDEX);CHR$(28)
-                INPUT REL(PLACE_INDEX)
-                IF RE(PLACE_INDEX) = 2 OR RE(PLACE_INDEX) = 3
-                  PRINT " What key item number"
-                  PRINT " ";REK(PLACE_INDEX);CHR$(28)
-                  INPUT REK(PLACE_INDEX)
-                ENDIF
-                IF RE(PLACE_INDEX) = 5
-                  PRINT " What password/spell number."
-                  PRINT " ";REK(PLACE_INDEX);CHR$(28)
-                  INPUT REK(PLACE_INDEX)
-                ENDIF
-              ENDIF
+              PRINT " Place "; R; "   East Exit."
+              EXEC Show_Exit_Options Re(PLACE_INDEX),REK(PLACE_INDEX),REL(PLACE_INDEX)
+              RE(PLACE_INDEX) = H
+              REK(PLACE_INDEX) = I
+              REL(PLACE_INDEX) = J
               CLS
-              PRINT " Place "; PLACE_INDEX
-              PRINT "South exit. 0-No exit. 1-Open.          2-Unlocked. 3-Is locked. 4-Secret exit. 5-Password to open."
-              PRINT " ";RS(PLACE_INDEX);CHR$(28)
+              PRINT " Place "; PLACE_INDEX; "   South Exit."
               INPUT RS(PLACE_INDEX)
-              IF RS(PLACE_INDEX) > 0
-                PRINT "What place number it leads to"
-                PRINT " ";RSL(PLACE_INDEX);CHR$(28)
-                INPUT RSL(PLACE_INDEX)
-                IF RS(PLACE_INDEX) = 2 OR RS(PLACE_INDEX) = 3
-                  PRINT " What key item number"
-                  PRINT " ";RSK(PLACE_INDEX);CHR$(28)
-                  INPUT RSK(PLACE_INDEX)
-                ENDIF
-                IF RS(PLACE_INDEX) = 5
-                  PRINT " What password/spell number."
-                  PRINT " ";RSK(PLACE_INDEX);CHR$(28)
-                  INPUT RSK(PLACE_INDEX)
-                ENDIF
-              ENDIF
+              EXEC Show_Exit_Options RS(PLACE_INDEX),RSK(PLACE_INDEX),RSL(PLACE_INDEX)
+              RS(PLACE_INDEX) = H               
+              RSK(PLACE_INDEX) = I
+              RSL(PLACE_INDEX) = J
               CLS
-              PRINT " Place "; PLACE_INDEX
-              PRINT "Up exit.0-No exit.1-Open.2-Need         climbing tool.4-Secret exit."
+              PRINT " Place "; PLACE_INDEX; "   Up Exit."
+              PRINT "0-No exit.1-Open.2-Need climbing tool.  4-Secret exit."
               PRINT " ";RU(PLACE_INDEX);CHR$(28)
               INPUT RU(PLACE_INDEX)
               IF RU(PLACE_INDEX) > 0
@@ -1106,8 +1051,8 @@ LOOP
                 INPUT RUL(PLACE_INDEX)
               ENDIF
               CLS
-              PRINT " Place "; PLACE_INDEX
-              PRINT "Down exit.0-No exit.1-Open.2-Need       climbing tool.3-Need to be dugged up.   4-Secret exit."
+              PRINT " Place "; PLACE_INDEX;"   Down Exit"
+              PRINT "0-No exit.1-Open.2-Need climbing tool.  3-Need to be dugged up.   4-Secret exit."
               PRINT " ";RD(PLACE_INDEX);CHR$(28)
               INPUT RD(PLACE_INDEX)
               IF RD(PLACE_INDEX) > 0
@@ -1179,6 +1124,32 @@ LOOP
         ENDIF
     UNTIL a=27 or Room_Type_In = 0    
   ENDPROC
+ '------------------------------------------------------------------------------ 
+   PROC Show_Exit_Options H I J
+        PRINT "0-No Exit. 1-Open. 2-Unlocked. 3-Locked.4-Secret Exit. 5-Need Password."
+        PRINT " ";H;CHR$(28)
+        INPUT H
+        IF H>=1
+          PRINT "Place Number Leads To"
+          PRINT " ";J;CHR$(28)
+          INPUT J
+          IF H = 2 OR H = 3
+            PRINT " What key item number"
+          ENDIF
+          IF H = 5
+            PRINT " What password/spell number."
+          ENDIF
+          IF H = 2 OR H = 3 OR H = 5
+              PRINT " ";I;CHR$(28)
+              INPUT I
+          ELSE
+              I = 0
+          ENDIF
+        ELSE
+            I = 0
+            J = 0
+        ENDIF
+   ENDPROC 
 '------------------------------------------------------------------------------    
   
   PROC CLEAR_GAME_MEMORY
@@ -1268,19 +1239,19 @@ LOOP
         PRINT #1, "(FE)"
         PRINT #1, S0
         PRINT #1, WIN_PLACE
-        PRINT #1, S2
-        PRINT #1, S3
-        PRINT #1, S4
-        PRINT #1, S5
-        PRINT #1, S6
-        PRINT #1, S7
-        PRINT #1, S8
+        PRINT #1, WIN_ITEM_01
+        PRINT #1, WIN_ITEM_02
+        PRINT #1, WIN_ITEM_03
+        PRINT #1, WIN_DEFEAT_01
+        PRINT #1, WIN_MONETARY
+        PRINT #1, WIN_ITEM_04
+        PRINT #1, Start_Shield_Points
         PRINT #1, S9
         PRINT #1, Inventory_Limit
-        PRINT #1, S11
-        PRINT #1, S12
-        PRINT #1, S13
-        PRINT #1, S14
+        PRINT #1, Computer_Character_Move_Set
+        PRINT #1, Total_Turns
+        PRINT #1, Food_Turn_Set
+        PRINT #1, Starting_Place_Number
         PRINT #1, S15
         PRINT #1, S16
         PRINT #1, S17
@@ -1294,18 +1265,18 @@ LOOP
         PRINT #1, S25
         PRINT #1, S26
         PRINT #1, S27
-        PRINT #1, S28
+        PRINT #1, RANDOM_SEED
         PRINT #1, S29
-        PRINT #1, S30
-        PRINT #1, S31
-        PRINT #1, S32
-        PRINT #1, S33
-        PRINT #1, S34
-        PRINT #1, S35
-        PRINT #1, S36
-        PRINT #1, S37
-        PRINT #1, S38
-        PRINT #1, S39
+        PRINT #1, WIN_ITEM_05
+        PRINT #1, WIN_ITEM_06
+        PRINT #1, WIN_ITEM_07
+        PRINT #1, WIN_ITEM_08
+        PRINT #1, WIN_ITEM_09
+        PRINT #1, WIN_ITEM_10
+        PRINT #1, WIN_DEFEAT_02
+        PRINT #1, WIN_DEFEAT_03
+        PRINT #1, WIN_DEFEAT_04
+        PRINT #1, WIN_DEFEAT_05
         PRINT #1, S40
         PRINT #1, S41
         PRINT #1, S42
@@ -1437,19 +1408,19 @@ LOOP
     INPUT #1, EDIT$(0)  'Future Expansion
     INPUT #1, S0
     INPUT #1, WIN_PLACE 'S1
-    INPUT #1, S2
-    INPUT #1, S3
-    INPUT #1, S4
-    INPUT #1, S5
-    INPUT #1, S6
-    INPUT #1, S7
-    INPUT #1, S8
+    INPUT #1, WIN_ITEM_01
+    INPUT #1, WIN_ITEM_02
+    INPUT #1, WIN_ITEM_03
+    INPUT #1, WIN_DEFEAT_01
+    INPUT #1, WIN_MONETARY
+    INPUT #1, WIN_ITEM_04
+    INPUT #1, Start_Shield_Points
     INPUT #1, S9
     INPUT #1, Inventory_Limit
-    INPUT #1, S11
-    INPUT #1, S12
-    INPUT #1, S13
-    INPUT #1, S14
+    INPUT #1, Computer_Character_Move_Set
+    INPUT #1, Total_Turns
+    INPUT #1, Food_Turn_Set
+    INPUT #1, Starting_Place_Number
     INPUT #1, S15
     INPUT #1, S16
     INPUT #1, S17
@@ -1463,18 +1434,18 @@ LOOP
     INPUT #1, S25
     INPUT #1, S26
     INPUT #1, S27
-    INPUT #1, S28
+    INPUT #1, RANDOM_SEED
     INPUT #1, S29
-    INPUT #1, S30
-    INPUT #1, S31
-    INPUT #1, S32
-    INPUT #1, S33
-    INPUT #1, S34
-    INPUT #1, S35
-    INPUT #1, S36
-    INPUT #1, S37
-    INPUT #1, S38
-    INPUT #1, S39
+    INPUT #1, WIN_ITEM_05
+    INPUT #1, WIN_ITEM_06
+    INPUT #1, WIN_ITEM_07
+    INPUT #1, WIN_ITEM_08
+    INPUT #1, WIN_ITEM_09
+    INPUT #1, WIN_ITEM_10
+    INPUT #1, WIN_DEFEAT_02
+    INPUT #1, WIN_DEFEAT_03
+    INPUT #1, WIN_DEFEAT_04
+    INPUT #1, WIN_DEFEAT_05
     INPUT #1, S40
     INPUT #1, S41
     INPUT #1, S42
@@ -1627,6 +1598,7 @@ LOOP
                   K = A
               ENDIF
               IF CharPosition < EDIT_STRING_SIZE - 1 THEN -MOVE ScreenMemoryLoc + CharPosition, ScreenMemoryLoc + CharPosition + 1, EDIT_STRING_SIZE - CharPosition - 1
+              IF StringLength < EDIT_STRING_SIZE - 1 THEN StringLength = StringLength + 1
               POKE ScreenMemoryLoc + CharPosition +0,K
               IF CharPosition < EDIT_STRING_SIZE -1 then CharPosition = CharPosition + 1
               IF CharPosition > StringLength then StringLength = CharPosition  
@@ -1651,14 +1623,14 @@ LOOP
             if CharPosition > 40 then CharPosition = CharPosition - 40
         ELIF A=29
              if StringLength>40 
-               if c < StringLength - 38 then CharPosition = CharPosition + 40 
-               if CharPosition>=StringLength THEN CharPosition = StringLength  
+               if CharPosition < StringLength - 38 then CharPosition = CharPosition + 40 
+               if CharPosition >= StringLength THEN CharPosition = StringLength  
              endif
         ELIF A=30  
               if CharPosition > 0 then CharPosition = CharPosition - 1
         ELIF A=31 
-              if CharPosition < StringLength then CharPosition = CharPosition + 1
-              if CharPosition >=StringLength THEN CharPosition = StringLength 
+              if CharPosition <= StringLength then CharPosition = CharPosition + 1
+              if CharPosition > StringLength THEN CharPosition = StringLength 
         ENDIF
         ' StringLength = len(EDIT$(0)) + len(EDIT$(1)) + len(EDIT$(2))
       UNTIL A = 155

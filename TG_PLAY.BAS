@@ -1,3 +1,4 @@
+
 'can we port to fast basic (Atari)?'
 'can we port to visual basic.net (Windows PC)?'
 
@@ -39,7 +40,6 @@
   Last_Show_Number = 0
   seek$ = ""
   found_loc = 0
-  filename$ = ""
   I = 0
   J = 0
   K = 0
@@ -152,19 +152,19 @@ PROC Initialize
 
    S0 = 0
    WIN_PLACE = 0
-   S2 = 0
-   S3 = 0
-   S4 = 0
-   S5 = 0
-   S6 = 0
-   S7 = 0
-   S8 = 0
+   WIN_ITEM_01 = 0
+   WIN_ITEM_02 = 0
+   WIN_ITEM_03 = 0
+   WIN_DEFEAT_01 = 0
+   WIN_MONETARY = 0
+   WIN_ITEM_04 = 0
+   Start_Shield_Points = 0
    S9 = 0
    Inventory_Limit = 0
-   S11 = 0
-   S12 = 0
-   S13 = 0
-   S14 = 0
+   Computer_Character_Move_Set = 0
+   Total_Turns = 0
+   Food_Turn_Set = 0
+   Starting_Place_Number = 0
    S15 = 0
    S16 = 0
    S17 = 0
@@ -178,18 +178,18 @@ PROC Initialize
    S25 = 0
    S26 = 0
    S27 = 0
-   S28 = 0
+   RANDOM_SEED = 0
    S29 = 0
-   S30 = 0
-   S31 = 0
-   S32 = 0
-   S33 = 0
-   S34 = 0
-   S35 = 0
-   S36 = 0
-   S37 = 0
-   S38 = 0
-   S39 = 0
+   WIN_ITEM_05 = 0
+   WIN_ITEM_06 = 0
+   WIN_ITEM_07 = 0
+   WIN_ITEM_08 = 0
+   WIN_ITEM_09 = 0
+   WIN_ITEM_10 = 0
+   WIN_DEFEAT_02 = 0
+   WIN_DEFEAT_03 = 0
+   WIN_DEFEAT_04 = 0
+   WIN_DEFEAT_05 = 0
    S40 = 0
    C=0
    found_loc = 0 
@@ -210,7 +210,7 @@ PROC Main_line
        IF PlayerHitPoints < 0 OR PlayerFoodWaterNeed <= 0 THEN PlayerLifeStatus = 1
        Ft = 1
        IF PlayerLifeStatus = 0 
-         WHILE Current_Place = PriorRoom AND PlayerHitPoints >= 0 AND PlayerFoodWaterNeed >= 1 AND PlayerTurn<= S12 AND PlayerLifeStatus = 0 AND PlayerWinStatus = 0
+         WHILE Current_Place = PriorRoom AND PlayerHitPoints >= 0 AND PlayerFoodWaterNeed >= 1 AND PlayerTurn<= Total_Turns AND PlayerLifeStatus = 0 AND PlayerWinStatus = 0
            PlayerTurn = PlayerTurn + 1
            PlayerFoodWaterNeed = PlayerFoodWaterNeed - 1
            IF Ft = 0 
@@ -248,26 +248,26 @@ PROC Main_line
        ENDIF
        N = 0
        IF Current_Place = WIN_PLACE OR WIN_PLACE = 0 THEN N = N + 1
-       IF OL(S2) = 0 OR S2 = 0 THEN N = N + 1
-       IF OL(S3) = 0 OR S3 = 0 THEN N = N + 1
-       IF OL(S4) = 0 OR S4 = 0 THEN N = N + 1
-       IF OL(S7) = 0 OR S7 = 0 THEN N = N + 1
-       IF OL(S30) = 0 OR S30 = 0 THEN N = N + 1
-       IF OL(S31) = 0 OR S31 = 0 THEN N = N + 1
-       IF OL(S32) = 0 OR S32 = 0 THEN N = N + 1
-       IF OL(S33) = 0 OR S33 = 0 THEN N = N + 1
-       IF OL(S34) = 0 OR S34 = 0 THEN N = N + 1
-       IF OL(S35) = 0 OR S35 = 0 THEN N = N + 1
-       IF HH(S5) = 0 OR S5 = 0 THEN N = N + 1
-       IF HH(S36) = 0 OR S36 = 0 THEN N = N + 1
-       IF HH(S37) = 0 OR S37 = 0 THEN N = N + 1
-       IF HH(S38) = 0 OR S38 = 0 THEN N = N + 1
-       IF HH(S39) = 0 OR S39 = 0 THEN N = N + 1
-       IF C >= S6 OR S6 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_01) = 0 OR WIN_ITEM_01 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_02) = 0 OR WIN_ITEM_02 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_03) = 0 OR WIN_ITEM_03 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_04) = 0 OR WIN_ITEM_04 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_05) = 0 OR WIN_ITEM_05 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_06) = 0 OR WIN_ITEM_06 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_07) = 0 OR WIN_ITEM_07 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_08) = 0 OR WIN_ITEM_08 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_09) = 0 OR WIN_ITEM_09 = 0 THEN N = N + 1
+       IF OL(WIN_ITEM_10) = 0 OR WIN_ITEM_10 = 0 THEN N = N + 1
+       IF HH(WIN_DEFEAT_01) = 0 OR WIN_DEFEAT_01 = 0 THEN N = N + 1
+       IF HH(WIN_DEFEAT_02) = 0 OR WIN_DEFEAT_02 = 0 THEN N = N + 1
+       IF HH(WIN_DEFEAT_03) = 0 OR WIN_DEFEAT_03 = 0 THEN N = N + 1
+       IF HH(WIN_DEFEAT_04) = 0 OR WIN_DEFEAT_04 = 0 THEN N = N + 1
+       IF HH(WIN_DEFEAT_05) = 0 OR WIN_DEFEAT_05 = 0 THEN N = N + 1
+       IF C >= WIN_MONETARY OR WIN_MONETARY = 0 THEN N = N + 1
        IF N = 17 THEN PlayerWinStatus= 1
      ENDIF
-   UNTIL PlayerLifeStatus = 1 OR PlayerWinStatus= 1 OR PlayerTurn> S12
-   IF PlayerTurn> S12  
+   UNTIL PlayerLifeStatus = 1 OR PlayerWinStatus= 1 OR PlayerTurn> Total_Turns
+   IF PlayerTurn> Total_Turns  
       LIVES = -1
    ENDIF 
    IF PlayerHitPoints < 0 OR PlayerFoodWaterNeed < 0 OR PlayerLifeStatus 
@@ -281,11 +281,11 @@ PROC Main_line
          N = KEY()
        UNTIL N > 0
      ENDIF
-     IF PlayerHitPoints < 10 THEN PlayerHitPoints = S8
-     IF PlayerFoodWaterNeed < 10 THEN PlayerFoodWaterNeed = S13
+     IF PlayerHitPoints < 10 THEN PlayerHitPoints = Start_Shield_Points
+     IF PlayerFoodWaterNeed < 10 THEN PlayerFoodWaterNeed = Food_Turn_Set
      IF S16 = 2 OR S16 = 3 OR RT(Current_Place) = 2 OR RT(Current_Place) = 5 OR RT(Current_Place) = 9 
-       PriorRoom = S14
-       Current_Place = S14
+       PriorRoom = Starting_Place_Number
+       Current_Place = Starting_Place_Number
      ENDIF
      IF S16 = 1 
        PriorRoom = 0
@@ -386,9 +386,9 @@ PROC Fight_Computer_Controlled_Character
                IF a$[1, 2] = "K3" 
                  Hd = S25
                ENDIF
-               IF Hd > 0 
-                 HH(Computer_Character_Index) = HH(Computer_Character_Index) - Hd
-                 IF HH(Computer_Character_Index) >= 0 
+               IF Hd > 0                  
+                 IF HH(Computer_Character_Index) >= Hd
+                     HH(Computer_Character_Index) = HH(Computer_Character_Index) - Hd
                      Show$(0) = "You just damaged the "
                      Show$(0) =+ Show$(2) 
                      Show$(0) =+ " by " 
@@ -397,10 +397,12 @@ PROC Fight_Computer_Controlled_Character
                      ADJ = 1
                      EXEC Display
                  ELSE
+                     HH(Computer_Character_Index) = 0
                      PRINT "You killed the "; Show$(2); ". "
                      IF Ht(Computer_Character_Index) = 6 AND HS(Computer_Character_Index) > 0 
-                       
-                       '*** PRINT "Found "; ItemName$(HS(Computer_Character_Index)); ". "
+                       N = HS(Computer_Character_Index)
+                       Z=USR(@FIELD_GET, Item_Name_Base + ItemFieldSize * N, ADR(Show$(3)), ItemFieldSize, Name_Bank)
+                       PRINT "Found "; ADR(Show$(3)); ". "
                        OL(HS(Computer_Character_Index)) = Current_Place
                        HS(Computer_Character_Index) = 0
                      ENDIF
@@ -527,7 +529,7 @@ PROC Computer_Character_Attack
 ENDPROC
 '------------------------------------------------------------------------------
 PROC Move_Computer_Controlled_Characters
-     IF S11 = 1 
+     IF Computer_Character_Move_Set = 1 
        FOR N = 1 TO Total_Computer_Characters
          IF HH(N) >= 0 
            EXEC Random_place
@@ -543,7 +545,7 @@ PROC Move_Computer_Controlled_Characters
          ENDIF
        NEXT N
      ENDIF
-     IF S11 = 2 
+     IF Computer_Character_Move_Set = 2 
        FOR N = 1 TO Total_Computer_Characters
          IF HH(N) >= 0 
            EXEC Random_place
@@ -559,7 +561,7 @@ PROC Move_Computer_Controlled_Characters
          ENDIF
        NEXT N
      ENDIF
-     IF S11 = 3 
+     IF Computer_Character_Move_Set = 3 
        FOR N = 1 TO Total_Computer_Characters         
            IF Hm(N) = 2
              EXEC Random_place
@@ -747,8 +749,7 @@ PROC New_place
             IF Rn(Current_Place) > 0 AND Rn(Current_Place) <> 4 
               B$ =+ "North"
               Exit_Count = Exit_Count + 1
-              IF Rn(Current_Place) = 3 OR Rn(Current_Place) = 5 THEN B$ =+ "(locked)"
-              IF Rn(Current_Place) = 2 THEN B$ =+ "(unlocked)"
+              EXEC Show_Exit_Status Rn(Current_Place) 
             ENDIF
             IF (Re(Current_Place) > 0 AND Re(Current_Place) <> 4) AND Exit_Count > 0 
               B$ =+ ", "
@@ -757,8 +758,7 @@ PROC New_place
             IF Re(Current_Place) > 0 AND Re(Current_Place) <> 4 
               B$ =+ "East"
               Exit_Count = Exit_Count + 1
-              IF Re(Current_Place) = 3 OR Re(Current_Place) = 5 THEN B$ =+ "(locked)"
-              IF Re(Current_Place) = 2 THEN B$ =+ "(unlocked)"
+              EXEC Show_Exit_Status Re(Current_Place)
             ENDIF
             IF (Rw(Current_Place) > 0 AND Rw(Current_Place) <> 4) AND Exit_Count 
               B$ =+ ", "
@@ -767,8 +767,7 @@ PROC New_place
             IF Rw(Current_Place) > 0 AND Rw(Current_Place) <> 4 
               B$ =+ "West"
               Exit_Count = Exit_Count + 1
-              IF Rw(Current_Place) = 3 OR Rw(Current_Place) = 5 THEN B$ =+ "(locked)"
-              IF Rw(Current_Place) = 2 THEN B$ =+ "(unlocked)"
+              EXEC Show_Exit_Status Rw(Current_Place)
             ENDIF
             IF (Rs(Current_Place) > 0 AND Rs(Current_Place) <> 4) AND Exit_Count 
               B$ =+ ", "
@@ -777,8 +776,7 @@ PROC New_place
             IF Rs(Current_Place) > 0 AND Rs(Current_Place) <> 4 
               B$ =+ "South"
               Exit_Count = Exit_Count + 1
-              IF Rs(Current_Place) = 3 OR Rs(Current_Place) = 5 THEN B$ =+ "(locked)"
-              IF Rs(Current_Place) = 2 THEN B$ =+ "(unlocked)"
+              EXEC Show_Exit_Status Rs(Current_Place)
             ENDIF
             IF (Ru(Current_Place) > 0 AND Ru(Current_Place) <> 4) AND Exit_Count 
               B$ =+ ", "
@@ -948,7 +946,12 @@ PROC New_place
             C = 0
           ENDIF
         ENDIF
-        IF RT(Current_Place) = 15 OR (RT(Current_Place) = 10 AND S16 = 3) THEN S14 = Current_Place
+        IF RT(Current_Place) = 15 OR (RT(Current_Place) = 10 AND S16 = 3) THEN Starting_Place_Number = Current_Place
+ENDPROC
+'------------------------------------------------------------------------------
+PROC Show_Exit_Status N
+        IF N = 3 OR N = 5 THEN B$ =+ "(locked)"
+        IF N = 2 THEN B$ =+ "(unlocked)"
 ENDPROC
 '------------------------------------------------------------------------------
 PROC Go_Direction
@@ -1168,11 +1171,11 @@ ENDPROC
 '------------------------------------------------------------------------------
 PROC Show_Status 
    Show$(0) = "You "
-   IF S12 >= 1 
+   IF Total_Turns >= 1 
      Show$(0) =+ "are on turn "
      Show$(0) =+ STR$(Turn_Number) 
      Show$(0) =+ " of " 
-     Show$(0) =+ STR$(S12) 
+     Show$(0) =+ STR$(Total_Turns) 
      Show$(0) =+ ". "
    ENDIF
    B$ = ""
@@ -1189,7 +1192,7 @@ PROC Show_Status
      LC = T2
      T2 = LEN(B$)
    ENDIF
-   IF S8 > 0 
+   IF Start_Shield_Points > 0 
      EXEC Get_Hitpoint_Name
      B$ =+ STR$(PlayerHitPoints)
      B$ =+ P$
@@ -1202,6 +1205,7 @@ PROC Show_Status
      Z=USR(@CHANGE_CASE,1,ADR(P$))
      B$ =+ " "
      B$ =+ STR$(C)
+     B$ =+ " "
      B$ =+ P$
      B$ =+ ", "
      LC = T2
@@ -1226,7 +1230,7 @@ PROC Show_Status
      Show$(0) =+ "You have "
      Show$(0) =+ B$
    ENDIF
-   IF S13 > 0 AND PlayerFoodWaterNeed < 13 
+   IF Food_Turn_Set > 0 AND PlayerFoodWaterNeed < 13 
      Show$(0) =+ "You need food or water, have "
      Show$(0) =+ STR$(PlayerFoodWaterNeed)
      Show$(0) =+ " turns left. "
@@ -1321,7 +1325,7 @@ PROC Get_Objects
                 IF OT(N) = 18 
                   Show$(0) =+ "Now have more turns."
                   OL(N) = 255
-                  S12 = S12 + OV(N)
+                  Total_Turns = Total_Turns + OV(N)
                 ENDIF
                 IF OT(N) = 20 
                   Show$(0) =+ "Gained " 
@@ -1998,7 +2002,7 @@ PROC Display
 ENDPROC
 '------------------------------------------------------------------------------
 PROC Get_HitPoint_Name
-     IF S18 = 0 OR S8 > 0        
+     IF S18 = 0 OR Start_Shield_Points > 0        
        P$ = " hit points" 
      ENDIF
      IF S18 = 1 
@@ -2016,11 +2020,6 @@ PROC Get_game
 
 
 
-     CLS
-     PRINT "       TEXT ADVENTURE GAME PLAYER      "
-     PRINT "        ATARI 8-BIT Version 1.50       "
-     PRINT "           BY PETER J. MEYER           "
-     PRINT FRE()  
      EXEC Load_file
      
     Z=USR(@FIELD_GET, GameName_Store,ADR(SHOW$(2)),40,Info_Bank)
@@ -2070,11 +2069,11 @@ PROC Get_game
        NEXT N
      ENDIF
      C = S22
-     PlayerHitPoints = S8
+     PlayerHitPoints = Start_Shield_Points
      PlayerImmunityTurns = 0
      PlayerPoisonStatus = 0
      PlayerInfectionStatus = 0
-     PlayerFoodWaterNeed = S13
+     PlayerFoodWaterNeed = Food_Turn_Set
      Current_Place = 1
      PlayerLifeStatus = 0
      PlayerWinStatus= 0
@@ -2122,37 +2121,86 @@ ENDPROC
 'ENDPROC
 '------------------------------------------------------------------------------
 PROC Load_file
-   
-   
-   
-   
-    EXEC Disk_Directory
+    SHOW$(3) = "D1:*.TGF"  
+    REPEAT
+           CLS
+           PRINT "       TEXT ADVENTURE GAME PLAYER      "
+           PRINT "        ATARI 8-BIT Version 1.50       "
+           PRINT "           BY PETER J. MEYER           "
+            I = 0
+            J = 5        
+            PRINT 
+            PRINT "TEXT GAMES ON THIS DISK. ";SHOW$(3)[1,2]
+            OPEN #1,6,0,SHOW$(3)
+            REPEAT
+                  POSITION I,J 
+                  INPUT #1,SHOW$(0)
+                  IF ERR()=1 THEN PRINT SHOW$(0)
+                  I = I + 20
+                  IF I > 25 
+                      I = 0
+                      J = J + 1
+                  ENDIF
+            UNTIL ERR()>1
+            CLOSE #1
+            POSITION 0,22
+            PRINT "Name of File";B$
+            POSITION 12,22
+            INPUT ">>";B$
+            IF B$<>""
+                  J = LEN(B$) 
+                  IF B$[J,1] = ":" 
+                     B$ = B$[1,J-1]
+                     J = J - 1
+                  ENDIF
+                  I = ASC(B$[J,1])
+                  IF J>0 AND J<=2 AND I>47 AND I<58 
+                      SHOW$(3) = "D"
+                      SHOW$(3) =+ CHR$(I)
+                      SHOW$(3) =+":*.TGF"
+                  ELSE                    
+                      IF J > 0 
+                          IF B$[2,1]<>":" and B$[3,1]<>":" 
+                                SHOW$(0) = B$
+                                B$ = SHOW$(3)[1,3]
+                                B$ =+SHOW$(0)
+                          ENDIF
+                          I = LEN(B$) - 4
+                          IF I < 1 THEN I = 1
+                          IF B$[I,4]<>".TGF"
+                                B$ =+".TGF"
+                          ENDIF
+                      ENDIF
+                      SHOW$(3) = "FILE OK"
+                  ENDIF
+            ENDIF
+    UNTIL SHOW$(3) = "FILE OK"
     CLOSE #1
-    OPEN #1,4,0,FileName$
+    OPEN #1,4,0,B$
     INPUT #1, L
     L = L & 4095
     IF MemoryConfig = 128
-        CLS
-        H=DPEEK(88)+40
-        BGET #1,H,L
-        Z=USR(@FIELD_PUT,Intro_Text_Store,H-1,255,255,Info_Bank)
-        Z=USR(@FIELD_PUT,Intro_Text_Store+255,H+254,255,255,Info_Bank)
-        Z=USR(@FIELD_PUT,Intro_Text_Store+510,H+509,255,255,Info_Bank)
+          CLS
+          H=DPEEK(88)+40
+          BGET #1,H,L
+          Z=USR(@FIELD_PUT,Intro_Text_Store,H-1,255,255,Info_Bank)
+          Z=USR(@FIELD_PUT,Intro_Text_Store+255,H+254,255,255,Info_Bank)
+          Z=USR(@FIELD_PUT,Intro_Text_Store+510,H+509,255,255,Info_Bank)
     ELSE
-        BGET #1,Intro_Text_Store,L
+          BGET #1,Intro_Text_Store,L
     ENDIF
     INPUT #1, L
     L = L & 4095
     IF MemoryConfig = 128
-        CLS
-        H=DPEEK(88)+40
-        BGET #1,H,L
-        Z=USR(@FIELD_PUT,Closing_Text_Store,H-1,255,255,Info_Bank)
-        Z=USR(@FIELD_PUT,Closing_Text_Store+255,H+254,255,255,Info_Bank)
-        Z=USR(@FIELD_PUT,Closing_Text_Store+510,H+509,255,255,Info_Bank)        
-        CLS
+          CLS
+          H=DPEEK(88)+40
+          BGET #1,H,L
+          Z=USR(@FIELD_PUT,Closing_Text_Store,H-1,255,255,Info_Bank)
+          Z=USR(@FIELD_PUT,Closing_Text_Store+255,H+254,255,255,Info_Bank)
+          Z=USR(@FIELD_PUT,Closing_Text_Store+510,H+509,255,255,Info_Bank)        
+          CLS
     ELSE
-        BGET #1,Closing_Text_Store,L
+          BGET #1,Closing_Text_Store,L
     ENDIF
     INPUT #1, SHOW$(0)  'TITLE_TEXT$
     'EXEC CLEAR_STRING_MEMORY GameName_Store,40
@@ -2170,19 +2218,19 @@ PROC Load_file
     INPUT #1, SHOW$(0)  'Future Expansion
     INPUT #1, S0
     INPUT #1, WIN_PLACE 'S1
-    INPUT #1, S2
-    INPUT #1, S3
-    INPUT #1, S4
-    INPUT #1, S5
-    INPUT #1, S6
-    INPUT #1, S7
-    INPUT #1, S8
+    INPUT #1, WIN_ITEM_01
+    INPUT #1, WIN_ITEM_02
+    INPUT #1, WIN_ITEM_03
+    INPUT #1, WIN_DEFEAT_01
+    INPUT #1, WIN_MONETARY
+    INPUT #1, WIN_ITEM_04
+    INPUT #1, Start_Shield_Points
     INPUT #1, S9
     INPUT #1, Inventory_Limit
-    INPUT #1, S11
-    INPUT #1, S12
-    INPUT #1, S13
-    INPUT #1, S14
+    INPUT #1, Computer_Character_Move_Set
+    INPUT #1, Total_Turns
+    INPUT #1, Food_Turn_Set
+    INPUT #1, Starting_Place_Number
     INPUT #1, S15
     INPUT #1, S16
     INPUT #1, S17
@@ -2196,18 +2244,18 @@ PROC Load_file
     INPUT #1, S25
     INPUT #1, S26
     INPUT #1, S27
-    INPUT #1, S28
+    INPUT #1, RANDOM_SEED
     INPUT #1, S29
-    INPUT #1, S30
-    INPUT #1, S31
-    INPUT #1, S32
-    INPUT #1, S33
-    INPUT #1, S34
-    INPUT #1, S35
-    INPUT #1, S36
-    INPUT #1, S37
-    INPUT #1, S38
-    INPUT #1, S39
+    INPUT #1, WIN_ITEM_05
+    INPUT #1, WIN_ITEM_06
+    INPUT #1, WIN_ITEM_07
+    INPUT #1, WIN_ITEM_08
+    INPUT #1, WIN_ITEM_09
+    INPUT #1, WIN_ITEM_10
+    INPUT #1, WIN_DEFEAT_02
+    INPUT #1, WIN_DEFEAT_03
+    INPUT #1, WIN_DEFEAT_04
+    INPUT #1, WIN_DEFEAT_05
     INPUT #1, S40
     INPUT #1, S41
     INPUT #1, S42
@@ -2227,122 +2275,90 @@ PROC Load_file
     NEXT N
     INPUT #1, Total_Items
     FOR N = 1 TO Total_Items
-      INPUT #1, OT(N)
-      INPUT #1, Op(N)
-      INPUT #1, FP0%
-      INPUT #1, OV(N)
-      INPUT #1, OV2(N)
-      INPUT #1, OV3(N)
-      IF FP0%<256
-        OL(N) = INT(FP0%)
-      ELIF FP0%>255 AND FP0%<2000
-        OL(N) = 254
-      ELIF FP0%>1999 
-        OV3(N) = 192 + INT(FP0% / 2000)
-        OL(N) = INT(FP0% - OV3(N) * 2000)
-      ENDIF
-      INPUT #1, SHOW$(0) 'ON$(N)
-      Z=USR(@FIELD_PUT,Item_Name_Base + ItemFieldSize * N,ADR(SHOW$(0)),ItemFieldSize ,LEN(SHOW$(0)),Name_Bank)
-      'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
-      'EXEC CLEAR_STRING_MEMORY Item_Name_Base+16*N,16
-      'MOVE ADR(SHOW$(0))+1,Item_Name_Base+16*N,LEN(SHOW$(0))
-      'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
-      INPUT #1, SHOW$(0) 'OD$(N)
-      Z=USR(@FIELD_PUT,Item_Description_Base+80*N,ADR(SHOW$(0)),80,LEN(SHOW$(0)),Item_BANK)
-      'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
-      'EXEC CLEAR_STRING_MEMORY Item_Description_Base+80*N,80
-      'MOVE ADR(SHOW$(0))+1,Item_Description_Base+80*N,LEN(SHOW$(0))
-      'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
+        INPUT #1, OT(N)
+        INPUT #1, Op(N)
+        INPUT #1, FP0%
+        INPUT #1, OV(N)
+        INPUT #1, OV2(N)
+        INPUT #1, OV3(N)
+        IF FP0%<256
+          OL(N) = INT(FP0%)
+        ELIF FP0%>255 AND FP0%<2000
+          OL(N) = 254
+        ELIF FP0%>1999 
+          OV3(N) = 192 + INT(FP0% / 2000)
+          OL(N) = INT(FP0% - OV3(N) * 2000)
+        ENDIF
+        INPUT #1, SHOW$(0) 'ON$(N)
+        Z=USR(@FIELD_PUT,Item_Name_Base + ItemFieldSize * N,ADR(SHOW$(0)),ItemFieldSize ,LEN(SHOW$(0)),Name_Bank)
+        'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
+        'EXEC CLEAR_STRING_MEMORY Item_Name_Base+16*N,16
+        'MOVE ADR(SHOW$(0))+1,Item_Name_Base+16*N,LEN(SHOW$(0))
+        'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
+        INPUT #1, SHOW$(0) 'OD$(N)
+        Z=USR(@FIELD_PUT,Item_Description_Base+80*N,ADR(SHOW$(0)),80,LEN(SHOW$(0)),Item_BANK)
+        'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
+        'EXEC CLEAR_STRING_MEMORY Item_Description_Base+80*N,80
+        'MOVE ADR(SHOW$(0))+1,Item_Description_Base+80*N,LEN(SHOW$(0))
+        'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
     NEXT N
     INPUT #1, Total_Computer_Characters
     FOR N = 1 TO Total_Computer_Characters
-      INPUT #1, HL(N)
-      INPUT #1, HT(N)
-      INPUT #1, HS(N)
-      INPUT #1, HH(N)
-      INPUT #1, HV(N)
-      INPUT #1, HM(N)
-      INPUT #1, SHOW$(0) 'HN$(N)
-      Z=USR(@FIELD_PUT,Computer_Character_Base+16*N,ADR(SHOW$(0)),16,LEN(SHOW$(0)),Name_BANK)
-      'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
-      'EXEC CLEAR_STRING_MEMORY Computer_Character_Base+16*N,16
-      'MOVE ADR(SHOW$(0))+1,Computer_Character_Base+16*N,LEN(SHOW$(0))
-      'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
+        INPUT #1, HL(N)
+        INPUT #1, HT(N)
+        INPUT #1, HS(N)
+        INPUT #1, HH(N)
+        INPUT #1, HV(N)
+        INPUT #1, HM(N)
+        INPUT #1, SHOW$(0) 'HN$(N)
+        Z=USR(@FIELD_PUT,Computer_Character_Base+16*N,ADR(SHOW$(0)),16,LEN(SHOW$(0)),Name_BANK)
+        'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
+        'EXEC CLEAR_STRING_MEMORY Computer_Character_Base+16*N,16
+        'MOVE ADR(SHOW$(0))+1,Computer_Character_Base+16*N,LEN(SHOW$(0))
+        'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
     NEXT N
     INPUT #1, Total_Places
     FOR N = 1 TO Total_Places
-        INPUT #1, RT(N)
-        INPUT #1, RN(N)
-        INPUT #1, RNL(N)
-        INPUT #1, RNK(N)
-        INPUT #1, RW(N)
-        INPUT #1, RWL(N)
-        INPUT #1, RWK(N)
-        INPUT #1, RE(N)
-        INPUT #1, REL(N)
-        INPUT #1, REK(N)
-        INPUT #1, RS(N)
-        INPUT #1, RSL(N)
-        INPUT #1, RSK(N)
-        INPUT #1, RU(N)
-        INPUT #1, RUL(N)
-        INPUT #1, RD(N)
-        INPUT #1, RDL(N)
-        INPUT #1, RO(N)
-        INPUT #1, ROL(N)
-        INPUT #1, SHOW$(0) 'REN$(N)
-        Z=USR(@FIELD_PUT,Place_Exit_Base+16*N,ADR(SHOW$(0)),16,LEN(SHOW$(0)),Name_BANK)
-        'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
-        'EXEC CLEAR_STRING_MEMORY Place_Exit_Base+16*N,N
-        'MOVE ADR(SHOW$(0))+1,Place_Exit_Base+16*N,LEN(SHOW$(0))
-        'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
-        INPUT #1, ROV(N)
-        INPUT #1, SHOW$(0) 'RD$(N)
-        IF N < 128
-              Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*N,ADR(SHOW$(0)),Place_Field_Size,LEN(SHOW$(0)),Place_Bank1)
-        ELSE
-              Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*(N&127),ADR(SHOW$(0)),Place_Field_Size,LEN(SHOW$(0)),Place_Bank2)
-        ENDIF
-
-        'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
-        'EXEC CLEAR_STRING_MEMORY Place_Description_Base+Place_Field_Size*N,32
-        'MOVE ADR(SHOW$(0))+1,Place_Description_Base+Place_Field_Size*N,LEN(SHOW$(0))
-        'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
+          INPUT #1, RT(N)
+          INPUT #1, RN(N)
+          INPUT #1, RNL(N)
+          INPUT #1, RNK(N)
+          INPUT #1, RW(N)
+          INPUT #1, RWL(N)
+          INPUT #1, RWK(N)
+          INPUT #1, RE(N)
+          INPUT #1, REL(N)
+          INPUT #1, REK(N)
+          INPUT #1, RS(N)
+          INPUT #1, RSL(N)
+          INPUT #1, RSK(N)
+          INPUT #1, RU(N)
+          INPUT #1, RUL(N)
+          INPUT #1, RD(N)
+          INPUT #1, RDL(N)
+          INPUT #1, RO(N)
+          INPUT #1, ROL(N)
+          INPUT #1, SHOW$(0) 'REN$(N)
+          Z=USR(@FIELD_PUT,Place_Exit_Base+16*N,ADR(SHOW$(0)),16,LEN(SHOW$(0)),Name_BANK)
+          'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
+          'EXEC CLEAR_STRING_MEMORY Place_Exit_Base+16*N,N
+          'MOVE ADR(SHOW$(0))+1,Place_Exit_Base+16*N,LEN(SHOW$(0))
+          'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
+          INPUT #1, ROV(N)
+          INPUT #1, SHOW$(0) 'RD$(N)
+          IF N < 128
+                Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*N,ADR(SHOW$(0)),Place_Field_Size,LEN(SHOW$(0)),Place_Bank1)
+          ELSE
+                Z=USR(@FIELD_PUT,Place_Description_Base+Place_Field_Size*(N&127),ADR(SHOW$(0)),Place_Field_Size,LEN(SHOW$(0)),Place_Bank2)
+          ENDIF  
+          'IF MemoryConfig = 64 THEN POKE 54286,0:POKE $D301,254
+          'EXEC CLEAR_STRING_MEMORY Place_Description_Base+Place_Field_Size*N,32
+          'MOVE ADR(SHOW$(0))+1,Place_Description_Base+Place_Field_Size*N,LEN(SHOW$(0))
+          'IF MemoryConfig = 64 THEN POKE $D301,255:POKE 54286,64
     NEXT N
     CLOSE #1
 ENDPROC
 '------------------------------------------------------------------------------
-   PROC DISK_DIRECTORY
-        I = 0
-        J = 6
-        PRINT
-        PRINT "TEXT GAMES ON THIS DISK."
-        OPEN #1,6,0,"D:*.TGF*"
-        REPEAT
-            POSITION I,J 
-            INPUT #1,SHOW$(0)
-            IF ERR()=1 THEN PRINT SHOW$(0)
-            I = I + 20
-            IF I > 25 
-                I = 0
-                J = J + 1
-            ENDIF
-        UNTIL ERR()>1
-        POSITION 0,22
-        INPUT "GAME>";FileName$
-        IF FileName$<>""
-            IF FileName$[2,1]<>":" and FileName$[3,1]<>":" 
-                  SHOW$(0) = FileName$
-                  Filename$ = "D:"
-                  Filename$ =+SHOW$(0)
-            ENDIF
-            L = LEN(FileName$) - 4
-            IF L < 1 THEN L = 1
-            IF FileName$[L,4]<>".TGF"
-                  Filename$ =+".TGF"
-            ENDIF
-        ENDIF
-    ENDPROC
 '------------------------------------------------------------------------------    
     PROC Set_Memory_Configuration
         Place_Bank2 = 255
