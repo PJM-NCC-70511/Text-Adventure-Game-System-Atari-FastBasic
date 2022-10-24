@@ -119,19 +119,19 @@
   Total_Turns = 0
   Food_Turn_Set = 0
   Starting_Place_Number = 0
-  S15 = 0
-  S16 = 0
-  S17 = 0
-  S18 = 0
-  S19 = 0
-  S20 = 0
-  S21 = 0
-  S22 = 0
-  S23 = 0
-  S24 = 0
-  S25 = 0
-  S26 = 0
-  S27 = 0
+  Start_lives = 0
+  Player_Life_Resume = 0
+  HitPoint_Trap_Lost = 0
+  HitPoint_Name_Set = 0
+  HitPoint_Heal_Gain = 0
+  Next_File_After_Solve = 0
+  Armor_High_Set = 0
+  Start_Monetary_Units = 0
+  Computer_Character_Revive_HP = 0
+  Monetary_Trap_Lost = 0
+  Punch_Damage = 0
+  Kick_Damage = 0
+  Sale_Back_Percentage = 0
   RANDOM_SEED = 0
   S29 = 0
   WIN_ITEM_05 = 0
@@ -448,9 +448,9 @@ LOOP
     PRINT "Starting number of shield points"
     PRINT " ";Start_Shield_Points;CHR$(28)
     INPUT Start_Shield_Points
-    PRINT "How many credit units at start of game."
-    PRINT " ";S22;CHR$(28)
-    INPUT S22    
+    PRINT "Number of monetary units at game start."
+    PRINT " ";Start_Monetary_Units;CHR$(28)
+    INPUT Start_Monetary_Units    
     Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
     PRINT "Name of Monetary Units"
     EXEC BIG_TEXT_EDIT 12,20
@@ -473,60 +473,60 @@ LOOP
         INPUT Food_Turn_Set
         IF DD 
             PRINT "Place number for magician sanctuary"
-            INPUT S15
-            PRINT S15;CHR$(28)
+            INPUT Start_lives
+            PRINT Start_lives;CHR$(28)
         ELSE
             PRINT "Number of lives you have to solve game."
-            PRINT " ";S15;CHR$(28)
-            INPUT S15
+            PRINT " ";Start_lives;CHR$(28)
+            INPUT Start_lives
             PRINT "When player is killed."
             PRINT "1 Stay in same place."
             PRINT "2 Go to starting place."
             PRINT "3 Go to last sanctuary."
-            PRINT " ";S16;CHR$(28)
-            INPUT S16
+            PRINT " ";Player_Life_Resume;CHR$(28)
+            INPUT Player_Life_Resume
             PRINT "Maxinum number of objects carried"
             PRINT " ";Inventory_Limit;CHR$(28)
             INPUT Inventory_Limit
             PRINT "Number of Hit Points gain per turn"
-            PRINT " ";S19;CHR$(28)
-            INPUT S19
+            PRINT " ";HitPoint_Heal_Gain;CHR$(28)
+            INPUT HitPoint_Heal_Gain
        ENDIF
         CLS
         PRINT "How many shield points are lost in a"
         PRINT "shield point losing trap."
-        PRINT " ";S17;CHR$(28)
-        INPUT S17
+        PRINT " ";HitPoint_Trap_Lost;CHR$(28)
+        INPUT HitPoint_Trap_Lost
         PRINT "If hostilities are to be revived,"
         PRINT "enter amount hitpoints to be set at."
         PRINT "(-1 to restore to starting value)"
-        PRINT " ";S23;CHR$(28)
-        INPUT S23
+        PRINT " ";Computer_Character_Revive_HP;CHR$(28)
+        INPUT Computer_Character_Revive_HP
         PRINT "How many credit units will be lost in a credit loosing trap"
-        PRINT " ";S24;CHR$(28)
-        INPUT S24
+        PRINT " ";Monetary_Trap_Lost;CHR$(28)
+        INPUT Monetary_Trap_Lost
         PRINT "How hit points will be lost if hostilityis punched ?"
-        PRINT " ";S25;CHR$(28)
-        INPUT S25
+        PRINT " ";Punch_Damage;CHR$(28)
+        INPUT Punch_Damage
         PRINT "How hit points will be lost if hostilityis kicked ?"
-        PRINT " ";S26;CHR$(28)
-        INPUT S26
+        PRINT " ";Kick_Damage;CHR$(28)
+        INPUT Kick_Damage
         PRINT "Alternate name for shield points:"
-        PRINT "0 Shield points(default)"
+        PRINT "0 Hit points (default)"
         PRINT "1 Health points"
-        PRINT "2 Hit points"
+        PRINT "2 Shield points"
         PRINT "3 Life units"
         PRINT "4 Power units"
-        PRINT " ";S18;CHR$(28)
-        INPUT S18
+        PRINT " ";HitPoint_Name_Set;CHR$(28)
+        INPUT HitPoint_Name_Set
         CLS
         PRINT "Armor protection from hostility attack."
         PRINT "0 Armor is at highest percentage"
         PRINT "1 Armor points are accumulated"
         PRINT "2 Armor points are accumulated"
         PRINT "3 Armor+shields is at the highest"
-        PRINT " ";S21;CHR$(28)
-        INPUT S21
+        PRINT " ";Armor_High_Set;CHR$(28)
+        INPUT Armor_High_Set
         PRINT "Place display format:"
         PRINT "0 Exit, Items, and hostility seperate display. "
         PRINT "1 Exits appended to place description."
@@ -534,23 +534,23 @@ LOOP
         PRINT " ";S0;CHR$(28)
         INPUT S0
         PRINT "How many credit units do you get for killing each hostility ?"
-        PRINT " ";S19;CHR$(28)
-        INPUT S19
+        PRINT " ";HitPoint_Heal_Gain;CHR$(28)
+        INPUT HitPoint_Heal_Gain
         CLS
         PRINT "Objects sold at a market place."
         PRINT "0 Sold for the price of the object."
         PRINT "1 Sold at 90% of the price."
-        PRINT " ";S27;CHR$(28)
-        INPUT S27
+        PRINT " ";Sale_Back_Percentage;CHR$(28)
+        INPUT Sale_Back_Percentage
         PRINT "Randomization:"
         PRINT "0 To randomize to timer, anyother to randomize to that number."
         PRINT " ";RANDOM_SEED;CHR$(28)
         INPUT RANDOM_SEED
         PRINT "Enter 1 to load next file when solved."
         PRINT "      2 Must solve other file first."
-        PRINT " ";S20;CHR$(28)
-        INPUT S20
-        IF S20 = 1
+        PRINT " ";Next_File_After_Solve;CHR$(28)
+        INPUT Next_File_After_Solve
+        IF Next_File_After_Solve = 1
           Z=USR(@FIELD_GET, Next_File_Store,ADR(EDIT$(0)),12,Info_Bank)
           PRINT "Name of file."
           EXEC BIG_TEXT_EDIT 12,12
@@ -1252,19 +1252,19 @@ LOOP
         PRINT #1, Total_Turns
         PRINT #1, Food_Turn_Set
         PRINT #1, Starting_Place_Number
-        PRINT #1, S15
-        PRINT #1, S16
-        PRINT #1, S17
-        PRINT #1, S18
-        PRINT #1, S19
-        PRINT #1, S20
-        PRINT #1, S21
-        PRINT #1, S22
-        PRINT #1, S23
-        PRINT #1, S24
-        PRINT #1, S25
-        PRINT #1, S26
-        PRINT #1, S27
+        PRINT #1, Start_lives
+        PRINT #1, Player_Life_Resume
+        PRINT #1, HitPoint_Trap_Lost
+        PRINT #1, HitPoint_Name_Set
+        PRINT #1, HitPoint_Heal_Gain
+        PRINT #1, Next_File_After_Solve
+        PRINT #1, Armor_High_Set
+        PRINT #1, Start_Monetary_Units
+        PRINT #1, Computer_Character_Revive_HP
+        PRINT #1, Monetary_Trap_Lost
+        PRINT #1, Punch_Damage
+        PRINT #1, Kick_Damage
+        PRINT #1, Sale_Back_Percentage
         PRINT #1, RANDOM_SEED
         PRINT #1, S29
         PRINT #1, WIN_ITEM_05
@@ -1421,19 +1421,19 @@ LOOP
     INPUT #1, Total_Turns
     INPUT #1, Food_Turn_Set
     INPUT #1, Starting_Place_Number
-    INPUT #1, S15
-    INPUT #1, S16
-    INPUT #1, S17
-    INPUT #1, S18
-    INPUT #1, S19
-    INPUT #1, S20
-    INPUT #1, S21
-    INPUT #1, S22
-    INPUT #1, S23
-    INPUT #1, S24
-    INPUT #1, S25
-    INPUT #1, S26
-    INPUT #1, S27
+    INPUT #1, Start_lives
+    INPUT #1, Player_Life_Resume
+    INPUT #1, HitPoint_Trap_Lost
+    INPUT #1, HitPoint_Name_Set
+    INPUT #1, HitPoint_Heal_Gain
+    INPUT #1, Next_File_After_Solve
+    INPUT #1, Armor_High_Set
+    INPUT #1, Start_Monetary_Units
+    INPUT #1, Computer_Character_Revive_HP
+    INPUT #1, Monetary_Trap_Lost
+    INPUT #1, Punch_Damage
+    INPUT #1, Kick_Damage
+    INPUT #1, Sale_Back_Percentage
     INPUT #1, RANDOM_SEED
     INPUT #1, S29
     INPUT #1, WIN_ITEM_05

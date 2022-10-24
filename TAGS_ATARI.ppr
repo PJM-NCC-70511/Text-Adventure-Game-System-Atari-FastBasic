@@ -1,0 +1,56 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+Compilator.LogEncoding=0
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+HTServer=localhost
+[Project tree]
+TAGS_ATARI
+	+Folder
+		..\TG_PLAY_FAST.BAS
+		..\TG_EDIT_WHOLE.BAS
+[Open project files]
+0=TG_EDIT.BAS
+1=TG_PLAY.BAS
+2=xmove.asm
+3=TG_PLAY_FAST_WHOLE.BAS
+4=..\fastbasic_custom.cfg
+5=..\fastbasic_original.cfg
+6=..\fastbasic.cfg
+7=string2screen.asm
+[Selected Project Files]
+Main=
+Selected=TG_PLAY.BAS
+[TG_EDIT.BAS]
+TopLine=1607
+Caret=20,1658
+[TG_PLAY.BAS]
+TopLine=2206
+Caret=28,2232
+[xmove.asm]
+TopLine=92
+Caret=1,114
+[TG_PLAY_FAST_WHOLE.BAS]
+TopLine=224
+Caret=1,244
+[..\fastbasic_custom.cfg]
+TopLine=15
+Caret=1,1
+[..\fastbasic_original.cfg]
+TopLine=11
+Caret=1,1
+[..\fastbasic.cfg]
+TopLine=33
+Caret=9,55
+[string2screen.asm]
+TopLine=46
+Caret=14,56

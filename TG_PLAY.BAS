@@ -165,19 +165,19 @@ PROC Initialize
    Total_Turns = 0
    Food_Turn_Set = 0
    Starting_Place_Number = 0
-   S15 = 0
-   S16 = 0
-   S17 = 0
-   S18 = 0
-   S19 = 0
-   S20 = 0
-   S21 = 0
-   S22 = 0
-   S23 = 0
-   S24 = 0
-   S25 = 0
-   S26 = 0
-   S27 = 0
+   Start_lives = 0
+   Player_Life_Resume = 0
+   HitPoint_Trap_Lost = 0
+   HitPoint_Name_Set = 0
+   HitPoint_Heal_Gain = 0
+   Next_File_After_Solve = 0
+   Armor_High_Set = 0
+   Start_Monetary_Units = 0
+   Computer_Character_Revive_HP = 0
+   Monetary_Trap_Lost = 0
+   Punch_Damage = 0
+   Kick_Damage = 0
+   Sale_Back_Percentage = 0
    RANDOM_SEED = 0
    S29 = 0
    WIN_ITEM_05 = 0
@@ -283,11 +283,11 @@ PROC Main_line
      ENDIF
      IF PlayerHitPoints < 10 THEN PlayerHitPoints = Start_Shield_Points
      IF PlayerFoodWaterNeed < 10 THEN PlayerFoodWaterNeed = Food_Turn_Set
-     IF S16 = 2 OR S16 = 3 OR RT(Current_Place) = 2 OR RT(Current_Place) = 5 OR RT(Current_Place) = 9 
+     IF Player_Life_Resume = 2 OR Player_Life_Resume = 3 OR RT(Current_Place) = 2 OR RT(Current_Place) = 5 OR RT(Current_Place) = 9 
        PriorRoom = Starting_Place_Number
        Current_Place = Starting_Place_Number
      ENDIF
-     IF S16 = 1 
+     IF Player_Life_Resume = 1 
        PriorRoom = 0
        H = 0
      ENDIF
@@ -381,10 +381,10 @@ PROC Fight_Computer_Controlled_Character
                      ENDIF
                ENDIF 
                IF a$[1, 2] = "K2" 
-                 Hd = S26
+                 Hd = Kick_Damage
                ENDIF
                IF a$[1, 2] = "K3" 
-                 Hd = S25
+                 Hd = Punch_Damage
                ENDIF
                IF Hd > 0                  
                  IF HH(Computer_Character_Index) >= Hd
@@ -410,10 +410,10 @@ PROC Fight_Computer_Controlled_Character
                      Ht(Computer_Character_Index) = Ht(Computer_Character_Index) OR 128
                      Hm(Computer_Character_Index) = Hm(Computer_Character_Index) OR 128
                      Computer_Character_Index = 0
-                     IF S19 
+                     IF HitPoint_Heal_Gain 
                        Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(P$),12,Info_Bank)
-                       PRINT "You have been awarded "; S19; " "; P$; ". "
-                       C = C + S19
+                       PRINT "You have been awarded "; HitPoint_Heal_Gain; " "; P$; ". "
+                       C = C + HitPoint_Heal_Gain
                      ENDIF
                  ENDIF
             ENDIF
@@ -448,8 +448,8 @@ PROC Computer_Character_Attack
       Z=USR(@TRIM,ADR(Show$(2)))
       Z=USR(@CHANGE_CASE,2,ADR(Show$(2)))              
      IF Ht(Computer_Character_Index) = 1 OR Ht(Computer_Character_Index) = 12 OR Ht(Computer_Character_Index) = 13 
-       IF S21 = 0 THEN FP0% = ((100 - Armor_Points) / 100) * HS(Computer_Character_Index)
-       IF S21 > 0 THEN FP0% = (1 - Armor_Points / (50 + Armor_Points)) * HS(Computer_Character_Index)
+       IF Armor_High_Set = 0 THEN FP0% = ((100 - Armor_Points) / 100) * HS(Computer_Character_Index)
+       IF Armor_High_Set > 0 THEN FP0% = (1 - Armor_Points / (50 + Armor_Points)) * HS(Computer_Character_Index)
        FP0% = INT(((.5 + FP0%) * 100) / 100)
        PlayerHitPoints = PlayerHitPoints - INT(FP0%)
        IF PlayerHitPoints > 0 
@@ -676,8 +676,8 @@ PROC Heal_Computer_Controlled_Character
      M = 1 + RAND(2)
      WHILE M < Total_Computer_Characters
        IF Hl(M) = L AND HH(M) < 0 AND (Ht(M) < 12 OR Ht(M) > 14) 
-         IF S23 > 0 THEN HH(M) = S23
-         IF S23 < 0 THEN HH(M) = HO(M)
+         IF Computer_Character_Revive_HP > 0 THEN HH(M) = Computer_Character_Revive_HP
+         IF Computer_Character_Revive_HP < 0 THEN HH(M) = HO(M)
          Ht(M) = Ht(M) AND 127
          Hm(M) = Hm(M) AND 127
        ENDIF
@@ -928,9 +928,9 @@ PROC New_place
           PRINT "Too dark, can not see."
         ENDIF
         IF RT(Current_Place) = 3 
-          PlayerHitPoints = PlayerHitPoints - S17
+          PlayerHitPoints = PlayerHitPoints - HitPoint_Trap_Lost
           EXEC Get_Hitpoint_Name
-          PRINT "You lost "; S17; P$
+          PRINT "You lost "; HitPoint_Trap_Lost; P$
           IF PlayerHitPoints < 0 
             PlayerHitPoints = 0
             PlayerLifeStatus = 1
@@ -941,12 +941,12 @@ PROC New_place
           '*** EXEC Find_survival_equipment
         ENDIF
         IF RT(Current_Place) = 9 
-          C = C - S24
+          C = C - Monetary_Trap_Lost
           IF C < 0 
             C = 0
           ENDIF
         ENDIF
-        IF RT(Current_Place) = 15 OR (RT(Current_Place) = 10 AND S16 = 3) THEN Starting_Place_Number = Current_Place
+        IF RT(Current_Place) = 15 OR (RT(Current_Place) = 10 AND Player_Life_Resume = 3) THEN Starting_Place_Number = Current_Place
 ENDPROC
 '------------------------------------------------------------------------------
 PROC Show_Exit_Status N
@@ -1181,7 +1181,7 @@ PROC Show_Status
    B$ = ""
    T2 = 1
    LC = 1
-   IF S15 > 0 
+   IF Start_lives > 0 
      B$ =+ STR$(LIVES)
      IF LIVES = 1 
        B$ =+ " life"
@@ -1200,7 +1200,7 @@ PROC Show_Status
      LC = T2
      T2 = LEN(B$)
    ENDIF
-   IF S22 > 0 
+   IF Start_Monetary_Units > 0 
      Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(P$),12,Info_Bank)
      Z=USR(@CHANGE_CASE,1,ADR(P$))
      B$ =+ " "
@@ -1211,7 +1211,7 @@ PROC Show_Status
      LC = T2
      T2 = LEN(B$)
    ENDIF
-   IF S21 = 1 
+   IF Armor_High_Set = 1 
      B$ =+ STR$(Armor_Points)
      B$ =+ " armor point"
      IF NOT Armor_Points = 1 THEN B$ =+ "s"
@@ -1319,7 +1319,7 @@ PROC Get_Objects
               ENDIF
               IF NOT (OT(N) = 18 OR OT(N) = 20 OR OT(N) = 23 OR OT(N) = 24 OR OT(N) = 26 OR OT(N) = 28) 
                 OL(N) = 0
-                IF S21 = 0 THEN Items_Carrying = Items_Carrying + 1
+                IF Armor_High_Set = 0 THEN Items_Carrying = Items_Carrying + 1
                 '***   IF OT(N) = 6 THEN EXEC Measure_armor
               ELSE
                 IF OT(N) = 18 
@@ -1381,8 +1381,8 @@ PROC Drop_Objects
             ELSE
                 Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(P$),12,Info_Bank)
                 Z=USR(@CHANGE_CASE,1,ADR(P$))
-                IF S27 = 0 THEN M = OP(N)
-                IF S27 = 1 THEN M = INT((OP(N) * .9) / 5) * 5
+                IF Sale_Back_Percentage = 0 THEN M = OP(N)
+                IF Sale_Back_Percentage = 1 THEN M = INT((OP(N) * .9) / 5) * 5
                 PRINT "Ok, sold "; Show$(3); " for "; M; " "; P$
                 Items_Carrying = Items_Carrying - 1
                 C = C + M
@@ -2002,16 +2002,16 @@ PROC Display
 ENDPROC
 '------------------------------------------------------------------------------
 PROC Get_HitPoint_Name
-     IF S18 = 0 OR Start_Shield_Points > 0        
+     IF HitPoint_Name_Set = 0 OR Start_Shield_Points > 0        
        P$ = " hit points" 
      ENDIF
-     IF S18 = 1 
+     IF HitPoint_Name_Set = 1 
        P$ = " health points"
      ENDIF
-     IF S18 = 2 
+     IF HitPoint_Name_Set = 2 
        P$ = " shield points"  
      ENDIF
-     IF S18 = 3 
+     IF HitPoint_Name_Set = 3 
        P$ = " life points"
      ENDIF
 ENDPROC
@@ -2058,17 +2058,17 @@ PROC Get_game
          Items_Carrying = Items_Carrying + 1
        ENDIF
      NEXT N
-     IF S15 > 0 
-       LIVES = S15
+     IF Start_lives > 0 
+       LIVES = Start_lives
      ELSE
        LIVES = 1
      ENDIF
-     IF S23 < 0 
+     IF Computer_Character_Revive_HP < 0 
        FOR N = 1 TO Total_Computer_Characters
          HO(N) = HH(N)
        NEXT N
      ENDIF
-     C = S22
+     C = Start_Monetary_Units
      PlayerHitPoints = Start_Shield_Points
      PlayerImmunityTurns = 0
      PlayerPoisonStatus = 0
@@ -2231,19 +2231,19 @@ PROC Load_file
     INPUT #1, Total_Turns
     INPUT #1, Food_Turn_Set
     INPUT #1, Starting_Place_Number
-    INPUT #1, S15
-    INPUT #1, S16
-    INPUT #1, S17
-    INPUT #1, S18
-    INPUT #1, S19
-    INPUT #1, S20
-    INPUT #1, S21
-    INPUT #1, S22
-    INPUT #1, S23
-    INPUT #1, S24
-    INPUT #1, S25
-    INPUT #1, S26
-    INPUT #1, S27
+    INPUT #1, Start_lives  
+    INPUT #1, Player_Life_Resume
+    INPUT #1, HitPoint_Trap_Lost
+    INPUT #1, HitPoint_Name_Set
+    INPUT #1, HitPoint_Heal_Gain
+    INPUT #1, Next_File_After_Solve
+    INPUT #1, Armor_High_Set
+    INPUT #1, Start_Monetary_Units
+    INPUT #1, Computer_Character_Revive_HP
+    INPUT #1, Monetary_Trap_Lost 
+    INPUT #1, Punch_Damage
+    INPUT #1, Kick_Damage
+    INPUT #1, Sale_Back_Percentage
     INPUT #1, RANDOM_SEED
     INPUT #1, S29
     INPUT #1, WIN_ITEM_05
