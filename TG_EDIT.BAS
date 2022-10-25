@@ -143,7 +143,7 @@
   WIN_DEFEAT_02 = 0
   WIN_DEFEAT_03 = 0
   WIN_DEFEAT_04 = 0
-  WIN_DEFEAT_04 = 0
+  WIN_DEFEAT_05 = 0
   S40 = 0
   S41 = 0
   S42 = 0
@@ -196,14 +196,12 @@ DO
    'POKE 54286,64
    
    PRINT "Text Adventure Game File Editor v1.50"
-   PRINT "ATARI 8-BIT Version by Peter J. Meyer"
-   PRINT
+   PRINT "ATARI 8-BIT Version by Peter J. Meyer";CHR$(153)
    PRINT "ITM:";Total_Items;"\";ItemTableSize;
    PRINT "  CCC:";Total_Computer_Characters;"\";ComputerCharacterTableSize;
    PRINT "  PLC:";Total_Places;"\";PlaceTableSize;
    IF MemoryConfig <=64
-        PRINT "   ";MemoryConfig;"K"
-        PRINT 
+        PRINT "   ";MemoryConfig;"K";CHR$(153) 
    ELIF MemoryConfig = 128
         PRINT " "
         POSITION 34,4
@@ -240,7 +238,7 @@ DO
     ELIF SELECTED  = 3
         EXEC  Edit_Passwords
     ELIF SELECTED  = 4
-        EXEC  Edit_Object_Data
+        EXEC  Edit_Item_Data
     ELIF SELECTED  = 5
         EXEC  Edit_Computer_Character_Data
     ELIF SELECTED  = 6
@@ -302,7 +300,7 @@ LOOP
     EDIT$(3) = ""
     PROMPT$ = ""
     FileName$=""
-    DD = 0
+    Use_Advance_RPG = 0
     O = 1
     H = 1
     R = 1
@@ -384,73 +382,51 @@ LOOP
     'MOVE ADR(EDIT$(0))+1,Closing_Text_Store,255
     'MOVE ADR(EDIT$(1))+1,Closing_Text_Store+255,255
     'MOVE ADR(EDIT$(2))+1,Closing_Text_Store+510,245
-    CLS
+    CLS    
     PRINT "Place number must be at to win"
-    A = WIN_PLACE
-    PRINT " ";A;CHR$(28)
-    INPUT A
-    WIN_PLACE = A
+    EXEC EDITVALUE ADR(WIN_PLACE)
     CLS
     PRINT "Objects must have to win"
     PRINT "1st"
-    PRINT " ";WIN_ITEM_01;CHR$(28)
-    INPUT WIN_ITEM_01
+    EXEC EDITVALUE ADR(WIN_ITEM_01)
     PRINT "2nd"
-    PRINT " ";WIN_ITEM_02;CHR$(28)
-    INPUT WIN_ITEM_02
+    EXEC EDITVALUE ADR(WIN_ITEM_02)
     PRINT "3rd"
-    PRINT " ";WIN_ITEM_03;CHR$(28)
-    INPUT WIN_ITEM_03
+    EXEC EDITVALUE ADR(WIN_ITEM_03)
     PRINT "4th"
-    PRINT " ";WIN_ITEM_04;CHR$(28)
-    INPUT WIN_ITEM_04
+    EXEC EDITVALUE ADR(WIN_ITEM_04)
     PRINT "5th"
-    PRINT " ";WIN_ITEM_05;CHR$(28)
-    INPUT WIN_ITEM_05
+    EXEC EDITVALUE ADR(WIN_ITEM_05)
     PRINT "6th"
-    PRINT " ";WIN_ITEM_06;CHR$(28)
-    INPUT WIN_ITEM_06
+    EXEC EDITVALUE ADR(WIN_ITEM_06)
     PRINT "7th"
-    PRINT " ";WIN_ITEM_07;CHR$(28)
-    INPUT WIN_ITEM_07
+    EXEC EDITVALUE ADR(WIN_ITEM_07)
     PRINT "8th"
-    PRINT " ";WIN_ITEM_08;CHR$(28)
-    INPUT WIN_ITEM_08
+    EXEC EDITVALUE ADR(WIN_ITEM_08)
     PRINT "9th"
-    PRINT " ";WIN_ITEM_09;CHR$(28)
-    INPUT WIN_ITEM_09
+    EXEC EDITVALUE ADR(WIN_ITEM_09)
     PRINT "10th"
-    PRINT " ";WIN_ITEM_10;CHR$(28)
-    INPUT WIN_ITEM_10
+    EXEC EDITVALUE ADR(WIN_ITEM_10)
     CLS
     PRINT "Hostilities must defeat to win"
     PRINT "1st"
-    PRINT " ";WIN_DEFEAT_01;CHR$(28)
-    INPUT WIN_DEFEAT_01
+    EXEC EDITVALUE ADR(WIN_DEFEAT_01)
     PRINT "2nd"
+    EXEC EDITVALUE ADR(WIN_DEFEAT_02)
     PRINT " ";WIN_DEFEAT_02;CHR$(28)
-    INPUT WIN_DEFEAT_02
-    PRINT "3rd"
+    EXEC EDITVALUE ADR(WIN_DEFEAT_03)
     PRINT " ";WIN_DEFEAT_03;CHR$(28)
-    INPUT WIN_DEFEAT_03
-    PRINT "4th"
-    PRINT " ";WIN_DEFEAT_04;CHR$(28)
-    INPUT WIN_DEFEAT_04
+    EXEC EDITVALUE ADR(WIN_DEFEAT_04)
     PRINT "5th"
-    PRINT " ";WIN_DEFEAT_04;CHR$(28)
-    INPUT WIN_DEFEAT_05
+    EXEC EDITVALUE ADR(WIN_DEFEAT_05)
     PRINT "Monetary units required to win."
-    PRINT " ";WIN_MONETARY;CHR$(28)
-    INPUT WIN_MONETARY
+    EXEC EDITVALUE ADR( WIN_MONETARY)
     PRINT "Starting place number"
-    PRINT " ";Starting_Place_Number;CHR$(28)
-    INPUT Starting_Place_Number
+    EXEC EDITVALUE ADR( Starting_Place_Number)
     PRINT "Starting number of shield points"
-    PRINT " ";Start_Shield_Points;CHR$(28)
-    INPUT Start_Shield_Points
+    EXEC EDITVALUE ADR( Start_Shield_Points)
     PRINT "Number of monetary units at game start."
-    PRINT " ";Start_Monetary_Units;CHR$(28)
-    INPUT Start_Monetary_Units    
+    EXEC EDITVALUE ADR( Start_Monetary_Units)   
     Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
     PRINT "Name of Monetary Units"
     EXEC BIG_TEXT_EDIT 12,20
@@ -463,93 +439,73 @@ LOOP
         PRINT "1 All at new loacation every move. "
         PRINT "2 All move start of each turn."
         PRINT "3 Controlled by the hostility data."
-        PRINT " ";Computer_Character_Move_Set;CHR$(28)
-        INPUT Computer_Character_Move_Set
+        EXEC EDITVALUE ADR(Computer_Character_Move_Set)
         PRINT "Number of turns to solve games."
-        PRINT " ";Total_Turns;CHR$(28)
-        INPUT Total_Turns
+        EXEC EDITVALUE ADR(Total_Turns)
         PRINT "Number of turns before getting food or  water."
-        PRINT " ";Food_Turn_Set;CHR$(28)
-        INPUT Food_Turn_Set
-        IF DD 
+        EXEC EDITVALUE ADR(Food_Turn_Set)
+        IF Use_Advance_RPG 
             PRINT "Place number for magician sanctuary"
-            INPUT Start_lives
-            PRINT Start_lives;CHR$(28)
+            EXEC EDITVALUE ADR(Start_lives)
         ELSE
             PRINT "Number of lives you have to solve game."
-            PRINT " ";Start_lives;CHR$(28)
-            INPUT Start_lives
+            EXEC EDITVALUE ADR(Start_lives)
             PRINT "When player is killed."
             PRINT "1 Stay in same place."
             PRINT "2 Go to starting place."
             PRINT "3 Go to last sanctuary."
-            PRINT " ";Player_Life_Resume;CHR$(28)
-            INPUT Player_Life_Resume
+            EXEC EDITVALUE ADR(Player_Life_Resume)
             PRINT "Maxinum number of objects carried"
-            PRINT " ";Inventory_Limit;CHR$(28)
-            INPUT Inventory_Limit
+            EXEC EDITVALUE ADR(Inventory_Limit)
             PRINT "Number of Hit Points gain per turn"
-            PRINT " ";HitPoint_Heal_Gain;CHR$(28)
-            INPUT HitPoint_Heal_Gain
+            EXEC EDITVALUE ADR(HitPoint_Heal_Gain)
        ENDIF
         CLS
         PRINT "How many shield points are lost in a"
-        PRINT "shield point losing trap."
-        PRINT " ";HitPoint_Trap_Lost;CHR$(28)
-        INPUT HitPoint_Trap_Lost
+        PRINT "shield point losing trap."        
+        EXEC EDITVALUE ADR(HitPoint_Trap_Lost)
         PRINT "If hostilities are to be revived,"
         PRINT "enter amount hitpoints to be set at."
         PRINT "(-1 to restore to starting value)"
-        PRINT " ";Computer_Character_Revive_HP;CHR$(28)
-        INPUT Computer_Character_Revive_HP
+        EXEC EDITVALUE ADR(Computer_Character_Revive_HP)
         PRINT "How many credit units will be lost in a credit loosing trap"
-        PRINT " ";Monetary_Trap_Lost;CHR$(28)
-        INPUT Monetary_Trap_Lost
+        EXEC EDITVALUE ADR(Monetary_Trap_Lost)
         PRINT "How hit points will be lost if hostilityis punched ?"
-        PRINT " ";Punch_Damage;CHR$(28)
-        INPUT Punch_Damage
+        EXEC EDITVALUE ADR(Punch_Damage)
         PRINT "How hit points will be lost if hostilityis kicked ?"
-        PRINT " ";Kick_Damage;CHR$(28)
-        INPUT Kick_Damage
+        EXEC EDITVALUE ADR(Kick_Damage)
         PRINT "Alternate name for shield points:"
         PRINT "0 Hit points (default)"
         PRINT "1 Health points"
         PRINT "2 Shield points"
         PRINT "3 Life units"
         PRINT "4 Power units"
-        PRINT " ";HitPoint_Name_Set;CHR$(28)
-        INPUT HitPoint_Name_Set
+        EXEC EDITVALUE ADR(HitPoint_Name_Set)
         CLS
         PRINT "Armor protection from hostility attack."
         PRINT "0 Armor is at highest percentage"
         PRINT "1 Armor points are accumulated"
         PRINT "2 Armor points are accumulated"
         PRINT "3 Armor+shields is at the highest"
-        PRINT " ";Armor_High_Set;CHR$(28)
-        INPUT Armor_High_Set
+        EXEC EDITVALUE ADR(Armor_High_Set)
         PRINT "Place display format:"
         PRINT "0 Exit, Items, and hostility seperate display. "
         PRINT "1 Exits appended to place description."
         PRINT "2 Exits and Items are appended to place description."
-        PRINT " ";S0;CHR$(28)
-        INPUT S0
+        EXEC EDITVALUE ADR(S0)
         PRINT "How many credit units do you get for killing each hostility ?"
-        PRINT " ";HitPoint_Heal_Gain;CHR$(28)
-        INPUT HitPoint_Heal_Gain
+        EXEC EDITVALUE ADR(HitPoint_Heal_Gain)
         CLS
         PRINT "Objects sold at a market place."
         PRINT "0 Sold for the price of the object."
         PRINT "1 Sold at 90% of the price."
-        PRINT " ";Sale_Back_Percentage;CHR$(28)
-        INPUT Sale_Back_Percentage
+        EXEC EDITVALUE ADR(Sale_Back_Percentage)
         PRINT "Randomization:"
         PRINT "0 To randomize to timer, anyother to randomize to that number."
-        PRINT " ";RANDOM_SEED;CHR$(28)
-        INPUT RANDOM_SEED
+        EXEC EDITVALUE ADR(RANDOM_SEED)
         PRINT "Enter 1 to load next file when solved."
         PRINT "      2 Must solve other file first."
-        PRINT " ";Next_File_After_Solve;CHR$(28)
-        INPUT Next_File_After_Solve
+        EXEC EDITVALUE ADR( Next_File_After_Solve)
         IF Next_File_After_Solve = 1
           Z=USR(@FIELD_GET, Next_File_Store,ADR(EDIT$(0)),12,Info_Bank)
           PRINT "Name of file."
@@ -578,7 +534,7 @@ LOOP
 
   ENDPROC
 '------------------------------------------------------------------------------  
-  PROC Edit_Object_Data
+  PROC Edit_Item_Data
    ITEM_INDEX = Total_Items + 1
    REPEAT
        CLS
@@ -610,7 +566,7 @@ LOOP
        PRINT "20 Extra life       42 Part of Item   "        
        PRINT "21 More inventory   "
        PRINT "22 Heavy container  "  
-       IF DD = 1 
+       IF Use_Advance_RPG = 1 
          PRINT "46 Armor/shield 1 "
          PRINT "47 Armor/shield 2 "
          PRINT "48 Head gear      "
@@ -712,8 +668,7 @@ LOOP
             POSITION 0, 0
             IF NOT PROMPT$ = "<SKIP>"
               PRINT PROMPT$
-              PRINT " ";OV(ITEM_INDEX);CHR$(28)
-              INPUT OV(ITEM_INDEX)
+              EXEC EDITVALUE ADR(OV)+ITEM_INDEX
             ENDIF
             PROMPT$ = "<SKIP>"      
             IF Item_Type_In = 3
@@ -756,16 +711,15 @@ LOOP
             ENDIF
             IF NOT PROMPT$ = "<SKIP>"
               PRINT PROMPT$
-              PRINT " ";OV2(ITEM_INDEX);CHR$(28)
-              INPUT  OV2(ITEM_INDEX)
+              EXEC EDITVALUE ADR(OV2) + ITEM_INDEX
             ENDIF
             IF Item_Type_In < 72 
+                B = OL(ITEM_INDEX)
                 PRINT "Enter the place number for this item."
                 PRINT "0 to place in inventory at game start."
                 PRINT "254 to be inside another item. Add 2000"
                 PRINT "for defeating hostile character reward."
-                PRINT " ";B + OL(ITEM_INDEX);CHR$(28)
-                INPUT  B
+                EXEC EDITVALUE ADR(B)
                 If B < 2000 
                     OL(ITEM_INDEX) = B
                     
@@ -774,8 +728,7 @@ LOOP
                     OV3(ITEM_INDEX) = 192 + B / 2000
                 ENDIF
                 PRINT " What is the item credit value.Enter 0 if no value."
-                PRINT " ";OP(ITEM_INDEX);CHR$(28)
-                INPUT  Op(ITEM_INDEX)
+                EXEC EDITVALUE ADR(OP)+ITEM_INDEX
                 PRINT
                 Z=USR(@FIELD_GET,Item_Name_Base+ItemFieldSize*ITEM_INDEX,ADR(EDIT$(0)),ItemFieldSize,Name_Bank) 
                 POSITION 0,17
@@ -881,19 +834,16 @@ LOOP
        IF Computer_Character_Type_In > 0 and Computer_Character_Type_In < 20
          HT(Computer_Character_Index) = Computer_Character_Type_In
          CLS
-         PRINT "Computer Character #:"; H
+         PRINT "Computer Character #"; Computer_Character_Index
          PRINT "Which place number is the hostility in"
-         PRINT " ";Hl(Computer_Character_Index);CHR$(28)
-         INPUT  HL(Computer_Character_Index)
+         EXEC EDITVALUE ADR(HL)+Computer_Character_Index
          IF HT(Computer_Character_Index) = 1 OR HT(Computer_Character_Index) = 12 OR HT(Computer_Character_Index) = 13 OR HT(Computer_Character_Index) = 16
            PRINT "Amount of damage per attack/turn."
-           PRINT " ";HS(Computer_Character_Index);CHR$(28)
-           INPUT  HS(Computer_Character_Index)
+           EXEC EDITVALUE ADR(HS)+Computer_Character_Index
          ENDIF
-         IF HT(Computer_Character_Index) = 17 OR (DD = 1 AND (HT(Computer_Character_Index) = 7 AND HT(Computer_Character_Index) = 8)) 
+         IF HT(Computer_Character_Index) = 17 OR (Use_Advance_RPG = 1 AND (HT(Computer_Character_Index) = 7 AND HT(Computer_Character_Index) = 8)) 
            PRINT "Amount of damage per attack/turn."
-           PRINT " ";HS(Computer_Character_Index);CHR$(28)
-           INPUT  HS(Computer_Character_Index)      
+            EXEC EDITVALUE ADR(HS)+Computer_Character_Index
          ENDIF
          IF HT(Computer_Character_Index) <> 6
            IF HT(Computer_Character_Index) < 12 OR HT(Computer_Character_Index) > 14
@@ -905,8 +855,7 @@ LOOP
            IF HT(Computer_Character_Index) = 13 OR HT(Computer_Character_Index) = 14
              PRINT "Password/Spell number to defeat it."
            ENDIF
-           PRINT " ";HH(Computer_Character_Index);CHR$(28)
-           INPUT  HH(Computer_Character_Index)
+           EXEC EDITVALUE ADR(HH)+Computer_Character_Index
          ENDIF
          IF Computer_Character_Move_Set = 3
            CLS
@@ -918,8 +867,7 @@ LOOP
            PRINT "6 Appears anywhere"
            PRINT "7 Decrement place number"
            PRINT "8 Pursues Player"
-           PRINT " ";HM(Computer_Character_Index);CHR$(28)
-           INPUT  HM(Computer_Character_Index)
+           EXEC EDITVALUE ADR(Hm)+Computer_Character_Index
          ENDIF
          IF HT(Computer_Character_Index) = 9
             PRINT "What place number does it put player?"
@@ -929,8 +877,7 @@ LOOP
             PRINT "How many shields points lost per turn?"
          ENDIF
          IF HT(Computer_Character_Index) = 9 OR HT(Computer_Character_Index) = 10 OR HT(Computer_Character_Index) = 16 OR HT(Computer_Character_Index) = 17            
-           PRINT " ";HS(Computer_Character_Index);CHR$(28)
-           INPUT  HS(Computer_Character_Index)
+            EXEC EDITVALUE ADR(HS)+Computer_Character_Index
          ENDIF
 
           Z=USR(@FIELD_GET, Computer_Character_Base + 16 * Computer_Character_Index,ADR(EDIT$(0)),16,Name_Bank)
@@ -1035,7 +982,6 @@ LOOP
               REL(PLACE_INDEX) = J
               CLS
               PRINT " Place "; PLACE_INDEX; "   South Exit."
-              INPUT RS(PLACE_INDEX)
               EXEC Show_Exit_Options RS(PLACE_INDEX),RSK(PLACE_INDEX),RSL(PLACE_INDEX)
               RS(PLACE_INDEX) = H               
               RSK(PLACE_INDEX) = I
@@ -1043,22 +989,18 @@ LOOP
               CLS
               PRINT " Place "; PLACE_INDEX; "   Up Exit."
               PRINT "0-No exit.1-Open.2-Need climbing tool.  4-Secret exit."
-              PRINT " ";RU(PLACE_INDEX);CHR$(28)
-              INPUT RU(PLACE_INDEX)
+              EXEC EDITVALUE ADR(RU)+PLACE_INDEX
               IF RU(PLACE_INDEX) > 0
                 PRINT " What place number it leads to"
-                PRINT " ";RUL(PLACE_INDEX);CHR$(28)
-                INPUT RUL(PLACE_INDEX)
+                EXEC EDITVALUE ADR(RUL)+PLACE_INDEX                
               ENDIF
               CLS
               PRINT " Place "; PLACE_INDEX;"   Down Exit"
               PRINT "0-No exit.1-Open.2-Need climbing tool.  3-Need to be dugged up.   4-Secret exit."
-              PRINT " ";RD(PLACE_INDEX);CHR$(28)
-              INPUT RD(PLACE_INDEX)
+                EXEC EDITVALUE ADR(RD)+PLACE_INDEX
               IF RD(PLACE_INDEX) > 0
                 PRINT " What place number it leads to"
-                PRINT " ";RDL(PLACE_INDEX);CHR$(28)
-                INPUT RDL(PLACE_INDEX)
+                EXEC EDITVALUE ADR(RDL)+PLACE_INDEX
               ENDIF
               CLS
               IF RT(PLACE_INDEX) = 11 OR RT(PLACE_INDEX) = 13
@@ -1075,25 +1017,21 @@ LOOP
                       PRINT "6-Password to appear."
                       PRINT "7-item/place that can be entered."
                       PRINT "8-Must be assembled."
-                      PRINT " ";RO(PLACE_INDEX);CHR$(28)
-                      INPUT RO(PLACE_INDEX)
+                      EXEC EDITVALUE ADR(RO)+PLACE_INDEX
                       IF RO(PLACE_INDEX) > 0
                           PRINT " What place number it leads to"
-                          B = ROL(PLACE_INDEX) AND 4095
-                          PRINT " ";B;CHR$(28)
-                          INPUT B
-                          ROL(PLACE_INDEX) = ROL(PLACE_INDEX) AND 61440 + B
+                          EXEC EDITVALUE ADR(ROL)+PLACE_INDEX
                           Z=USR(@FIELD_GET, Place_Exit_Base + 16 * PLACE_INDEX,ADR(EDIT$(0)),16,Name_Bank)
                           PRINT " Name of exit"  
                           EXEC BIG_TEXT_EDIT 16,14
                           Z=USR(@FIELD_PUT,Place_Exit_Base + 16 * PLACE_INDEX,ADR(EDIT$(0)),16,LEN(EDIT$(0)),Name_Bank)
-
                           IF RO(PLACE_INDEX) = 5 OR RO(PLACE_INDEX) = 6
                               PRINT " What Password/Spell will cause effect."
-                              B = INT(ROL(PLACE_INDEX) / 4096)
+                              B = RO(PLACE_INDEX)&240 / 16
                               PRINT " ";B;CHR$(28)
                               INPUT B
-                              ROL(PLACE_INDEX) = ROL(PLACE_INDEX) AND 4095 + 4096 * B
+                              B = B * 16
+                              RO(PLACE_INDEX) = ROL(PLACE_INDEX) AND 15 + B
                           ENDIF
                       ENDIF
                   ENDIF
@@ -1128,11 +1066,11 @@ LOOP
    PROC Show_Exit_Options H I J
         PRINT "0-No Exit. 1-Open. 2-Unlocked. 3-Locked.4-Secret Exit. 5-Need Password."
         PRINT " ";H;CHR$(28)
-        INPUT H
+        INPUT H     
         IF H>=1
           PRINT "Place Number Leads To"
           PRINT " ";J;CHR$(28)
-          INPUT J
+          INPUT J     
           IF H = 2 OR H = 3
             PRINT " What key item number"
           ENDIF
@@ -1141,7 +1079,7 @@ LOOP
           ENDIF
           IF H = 2 OR H = 3 OR H = 5
               PRINT " ";I;CHR$(28)
-              INPUT I
+              INPUT I     
           ELSE
               I = 0
           ENDIF
@@ -1665,6 +1603,13 @@ LOOP
       POKE 752,0
       POSITION BIG_TEXT_XPOS,Y_POS 
   ENDPROC
+'------------------------------------------------------------------------------  
+  PROC EDITVALUE J
+      I = PEEK(J)
+      PRINT " ";I;CHR$(28)
+      INPUT I     
+      POKE J,I
+  ENDPROC
  '------------------------------------------------------------------------------
   PROC Goto_Index
             POSITION 0,23
@@ -1711,7 +1656,7 @@ LOOP
     POSITION X_POS, Y_POS 
     PRINT EDIT$(0);"  ";
     POKE 752,0
-  ENDPROC
+  ENDPROC 
 '------------------------------------------------------------------------------
    PROC FIND_STORE_STRING_SIZE String_Addr_Start String_Length_In
       String_Length = String_Length_In + 1 
