@@ -196,14 +196,14 @@ DO
    'POKE 54286,64
    
    PRINT "Text Adventure Game File Editor v1.50"
-   PRINT "ATARI 8-BIT Version by Peter J. Meyer";CHR$(153)
+   PRINT "ATARI 8-BIT Version by Peter J. Meyer";CHR$(155)
    PRINT "ITM:";Total_Items;"\";ItemTableSize;
    PRINT "  CCC:";Total_Computer_Characters;"\";ComputerCharacterTableSize;
-   PRINT "  PLC:";Total_Places;"\";PlaceTableSize;
+   PRINT "  PLC:";Total_Places;"\";PlaceTableSize
    IF MemoryConfig <=64
-        PRINT "   ";MemoryConfig;"K";CHR$(153) 
+        POSITION 35,3
+        PRINT MemoryConfig;"K";CHR$(155) 
    ELIF MemoryConfig = 128
-        PRINT " "
         POSITION 34,4
         PRINT MemoryConfig;"K"
    ENDIF
@@ -413,9 +413,9 @@ LOOP
     EXEC EDITVALUE ADR(WIN_DEFEAT_01)
     PRINT "2nd"
     EXEC EDITVALUE ADR(WIN_DEFEAT_02)
-    PRINT " ";WIN_DEFEAT_02;CHR$(28)
+    PRINT "3rd"
     EXEC EDITVALUE ADR(WIN_DEFEAT_03)
-    PRINT " ";WIN_DEFEAT_03;CHR$(28)
+    PRINT "4th"
     EXEC EDITVALUE ADR(WIN_DEFEAT_04)
     PRINT "5th"
     EXEC EDITVALUE ADR(WIN_DEFEAT_05)
@@ -428,6 +428,7 @@ LOOP
     PRINT "Number of monetary units at game start."
     EXEC EDITVALUE ADR( Start_Monetary_Units)   
     Z=USR(@FIELD_GET,Monetary_Unit_Store,ADR(EDIT$(0)),12,Info_Bank)
+    POSITION 0,19
     PRINT "Name of Monetary Units"
     EXEC BIG_TEXT_EDIT 12,20
     Z=USR(@FIELD_PUT,Monetary_Unit_Store,ADR(EDIT$(0)),12,LEN(EDIT$(0)),Info_Bank)
@@ -556,25 +557,25 @@ LOOP
        PRINT "10 Shovel           32 Poison Antidote" 
        PRINT "11 Climbing tool    33 Component/Parts"
        PRINT "12 Document         34 Shows Text file" 
-       PRINT "13 Luminater        35 Healing        "
-       PRINT "14 Fuel             36 Transport      " 
-       PRINT "15 Survival         37 Heavy Container"
-       PRINT "16 Shield points    38 Luminater      " 
-       PRINT "17 Poison           39 Kills All      "
-       PRINT "18 More turns       40 Entraps All    " 
+       PRINT "13 Luminater        35 Healing(PW)    "
+       PRINT "14 Fuel             36 Transport(PW)  " 
+       PRINT "15 Survival         37 Container(PW)  " '37 Duplicated
+       PRINT "16 Shield points    38 Luminater(PW)  " '38 Duplicated
+       PRINT "17 Poison           39 Kills All(PW)  " 
+       PRINT "18 More turns       40 Entraps All(PW)" 
        PRINT "19 Case/Container   41 Screen file    " 
-       PRINT "20 Extra life       42 Part of Item   "        
-       PRINT "21 More inventory   "
-       PRINT "22 Heavy container  "  
-       IF Use_Advance_RPG = 1 
-         PRINT "46 Armor/shield 1 "
-         PRINT "47 Armor/shield 2 "
-         PRINT "48 Head gear      "
-         PRINT "49 Chest Armor    "
-         PRINT "50 Gloves         "
-         PRINT "51 Leggings       " 
-         PRINT "52 Boots          "
-         PRINT "53 Shields        "
+       PRINT "20 Extra life       42 Item Part (PW) "
+       PRINT "21 More inventory   ";        
+       IF Use_Advance_RPG = 0
+         PRINT
+       ELIF Use_Advance_RPG = 1
+         PRINT "43 Experience Add "
+       ENDIF 
+       PRINT "22 Heavy Container  ";
+       IF Use_Advance_RPG = 0
+         PRINT
+       ELIF Use_Advance_RPG = 1           
+         PRINT "44 Curse Protect  "  
        ENDIF
         IF OT(ITEM_INDEX) = 0 
             EDIT$(0) = ""
@@ -1862,8 +1863,7 @@ LOOP
   PROC SURE
     IF Modified = 1 
         SureToProceed = 0
-        PRINT 
-        PRINT "The Game Information has been modified,"
+        PRINT CHR$(155);"The Game Information has been modified,"
         PRINT "and not yet saved. Type YES to proceed."
         INPUT Edit$(3)
         IF Edit$(3)="YES" or Edit$(3)="yes" then SureToProceed = 1
